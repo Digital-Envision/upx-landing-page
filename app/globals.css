@@ -1,26 +1,172 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ===== Task 1.1: Upscalix Design System ===== */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  /* Base */
+  --background: #ffffff;
+  --foreground: #0f172a;
+
+  /* Primary - Deep Blue */
+  --primary: #2248F3;
+  --primary-dark: #1a38c2;
+  --primary-light: #4a6af5;
+  --primary-foreground: #ffffff;
+
+  /* Accent - Light Cyan */
+  --accent: #5EDFFF;
+  --accent-dark: #3ed0f5;
+  --accent-light: #8eeaff;
+  --accent-foreground: #0f172a;
+
+  /* Neutral */
+  --muted: #64748b;
+  --muted-light: #94a3b8;
+  --muted-foreground: #475569;
+
+  /* Borders & Cards */
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+
+  /* Section Backgrounds */
+  --section-blue: #f0f4ff;
+  --section-cyan: #f0fbff;
+  --section-indigo: #f3f0ff;
+  --section-mint: #eefff8;
+  --section-warm: #fff8f0;
+  --section-rose: #fef2f8;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #020617;
+    --foreground: #f1f5f9;
+
+    --primary: #4a6af5;
+    --primary-dark: #2248F3;
+    --primary-light: #7b93f7;
+    --primary-foreground: #ffffff;
+
+    --accent: #5EDFFF;
+    --accent-dark: #3ed0f5;
+    --accent-light: #8eeaff;
+    --accent-foreground: #020617;
+
+    --muted: #94a3b8;
+    --muted-light: #64748b;
+    --muted-foreground: #cbd5e1;
+
+    --border: #1e293b;
+    --border-light: #0f172a;
+    --card-bg: #0f172a;
+    --card-border: #1e293b;
+
+    --section-blue: #0c1a3d;
+    --section-cyan: #0c2a3d;
+    --section-indigo: #14103d;
+    --section-mint: #0c2a1e;
+    --section-warm: #2a1e0c;
+    --section-rose: #2a0c1e;
   }
 }
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-light: var(--accent-light);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-light: var(--muted-light);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-border-light: var(--border-light);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+
+  --color-section-blue: var(--section-blue);
+  --color-section-cyan: var(--section-cyan);
+  --color-section-indigo: var(--section-indigo);
+  --color-section-mint: var(--section-mint);
+  --color-section-warm: var(--section-warm);
+  --color-section-rose: var(--section-rose);
+
+  /* Typography */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+
+  /* Animations */
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 40s linear infinite;
+
+  /* Border Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
+}
+
+/* ===== Base Styles ===== */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Selection color */
+::selection {
+  background: color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+/* ===== Marquee Animations ===== */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
