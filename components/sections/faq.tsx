@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 
 const faqs = [
@@ -11,49 +11,49 @@ const faqs = [
       "Most teams are ready to kick off within 1-2 weeks. We match your requirements with pre-vetted senior engineers who have already worked together, so there's no lengthy recruitment or onboarding process.",
   },
   {
-    question: "What's the minimum engagement period?",
+    question: "What roles are included?",
     answer:
-      "We recommend a minimum of 3 months to see meaningful results, but there are no long-term lock-in contracts. You can scale up, scale down, or pause at any time with 30 days' notice.",
+      "Every team comes with senior fullstack developers, a technical lead / PM, and a QA engineer. You get a complete squad — not just individual contributors.",
   },
   {
-    question: "How do you ensure code quality?",
+    question: "How do I know the team is good?",
     answer:
-      "Every team follows strict engineering practices: code reviews on every PR, automated testing (unit, integration, E2E), CI/CD pipelines, and thorough documentation. Our Technical Leads ensure architectural consistency and best practices across all projects.",
+      "Every team follows strict engineering practices: code reviews on every PR, automated testing (unit, integration, E2E), CI/CD pipelines, and thorough documentation. You can also interview team members before kicking off.",
   },
   {
-    question: "What timezone do your teams work in?",
+    question: "Who manages the team day to day?",
     answer:
-      "Our teams are based in Indonesia (WIB/WITA), which provides a 4-hour overlap with AEST. Teams adjust their schedules to maximise overlap with your core working hours, and daily standups ensure alignment.",
+      "Your dedicated Technical Lead / PM handles day-to-day management, including standups, sprint planning, and ensuring delivery stays on track.",
   },
   {
-    question: "Can I interview the team members?",
+    question: "How do we work with the team?",
     answer:
-      "Absolutely. We encourage you to meet the team before kicking off. You'll have the opportunity to review CVs, conduct technical interviews, and ensure the team is the right fit for your project.",
+      "We integrate directly into your existing workflow — Slack, Microsoft Teams, Jira, Linear, or whatever tools you use. Daily standups, weekly demos, and transparent communication.",
   },
   {
-    question: "How is communication handled?",
+    question: "Can we scale up or down?",
     answer:
-      "We integrate directly into your existing workflow — Slack, Microsoft Teams, Jira, Linear, or whatever tools you use. Daily standups, weekly demos, and a dedicated Technical Lead ensure transparent, proactive communication.",
+      "Yes. You can scale up, scale down, or pause at any time with 30 days' notice. No long-term lock-in contracts.",
   },
   {
-    question: "What if a team member isn't the right fit?",
+    question: "Do we need to manage HR, payroll, or benefits?",
     answer:
-      "We handle all HR and performance management. If someone isn't meeting expectations, we'll replace them quickly — typically within 1-2 weeks — at no additional cost to you.",
+      "No. We handle all HR, payroll, benefits, and performance management. You only pay a simple monthly team rate.",
   },
   {
-    question: "Do you handle DevOps and infrastructure?",
+    question: "How do time zones work?",
     answer:
-      "Yes. Our teams are fullstack in the truest sense — they can set up and manage CI/CD pipelines, cloud infrastructure (AWS, GCP, Azure), containerisation (Docker, Kubernetes), monitoring, and more.",
+      "Our teams are based in Indonesia (WIB/WITA), which provides a 4-hour overlap with AEST. Teams adjust their schedules to maximise overlap with your core working hours.",
   },
   {
-    question: "How do you protect our intellectual property?",
+    question: "How do you ensure quality?",
     answer:
-      "All team members sign comprehensive NDAs and IP assignment agreements before starting. Your code, data, and intellectual property are fully yours. We can also work within your VPN and security requirements.",
+      "Code reviews on every PR, automated testing, CI/CD pipelines, and documentation. Our Technical Leads ensure architectural consistency and best practices across all projects.",
   },
   {
-    question: "What technologies do your teams specialise in?",
+    question: "What if someone leaves?",
     answer:
-      "Our teams have deep expertise across the modern stack: React, Next.js, Vue, Node.js, Python, Java, Go, PostgreSQL, MongoDB, AWS, GCP, Docker, Kubernetes, and more. We match the right expertise to your tech stack.",
+      "We handle all replacements quickly — typically within 1-2 weeks — at no additional cost to you. Our teams are built for stability and continuity.",
   },
 ];
 
@@ -61,41 +61,42 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="bg-white py-16 md:py-24">
+    <section className="bg-[#FAFBFF] py-24 md:py-32">
       <div className="mx-auto max-w-3xl px-6 lg:px-8">
         {/* Section header */}
         <AnimateOnScroll>
           <div className="mb-16 text-center">
-            <Badge variant="primary" className="mb-4">
+            <h1 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl">
               FAQ
-            </Badge>
-            <h2 className="text-3xl font-bold tracking-tight text-[#333] sm:text-4xl md:text-5xl">
-              Frequently asked questions
-            </h2>
-            <p className="mt-4 text-lg text-gray-500">
-              Everything you need to know about working with Upscalix.
-            </p>
+            </h1>
           </div>
         </AnimateOnScroll>
 
         {/* Accordion */}
         <AnimateOnScroll>
-          <div className="divide-y divide-gray-200">
+          <div className="space-y-3">
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
               return (
-                <div key={index} className="py-6">
+                <div
+                  key={index}
+                  className={`overflow-hidden rounded-xl border transition-all duration-300 ${
+                    isOpen
+                      ? "border-[#2248F3]/30 bg-white shadow-sm"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  }`}
+                >
                   <button
+                    className="flex w-full items-center justify-between px-6 py-5 text-left"
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-start justify-between text-left"
                     aria-expanded={isOpen}
                   >
-                    <span className="pr-8 text-base font-semibold text-[#333]">
+                    <span className="pr-8 text-base font-semibold text-[#1a1a1a]">
                       {faq.question}
                     </span>
                     <span className="ml-auto shrink-0">
                       <svg
-                        className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                        className={`h-5 w-5 text-[#555] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
                         aria-hidden="true"
@@ -108,15 +109,22 @@ export function FAQSection() {
                       </svg>
                     </span>
                   </button>
-                  <div
-                    className={`grid transition-all duration-200 ease-in-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
-                  >
-                    <div className="overflow-hidden">
-                      <p className="pt-4 text-sm leading-relaxed text-gray-500">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  </div>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                      >
+                        <div className="border-t border-gray-100 px-6 pb-5 pt-4">
+                          <p className="text-sm leading-relaxed text-[#555]">
+                            {faq.answer}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             })}

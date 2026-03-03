@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
 import { MobileMenu } from "./mobile-menu";
 
 const navLinks = [
@@ -32,11 +31,14 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA - Dark button like TurboTeam */}
         <div className="hidden lg:flex">
-          <Button as="a" href="https://calendar.google.com" size="md">
-            Book Discovery Call
-          </Button>
+          <a
+            href="https://calendar.google.com"
+            className="inline-flex items-center rounded-full bg-[#1a1a1a] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-black hover:shadow-lg"
+          >
+            Book discovery call
+          </a>
         </div>
 
         {/* Mobile Menu */}

@@ -2,17 +2,7 @@
 
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
-
-const clientLogos = [
-  "Telstra",
-  "ANZ",
-  "Canva",
-  "Atlassian",
-  "REA Group",
-];
 
 const characterEntrance = {
   initial: { y: 120, opacity: 0 },
@@ -22,82 +12,62 @@ const characterEntrance = {
     stiffness: 200,
     damping: 60,
     mass: 2,
-    delay: 1,
+    delay: 0.6,
   },
 };
 
 export function HeroSection() {
   const { scrollY } = useScroll();
 
-  // Left character drifts up faster for depth
-  const leftParallaxY = useTransform(scrollY, [0, 500], [0, -80]);
-  // Right character drifts up slightly slower
-  const rightParallaxY = useTransform(scrollY, [0, 500], [0, -60]);
+  const leftParallaxY = useTransform(scrollY, [0, 600], [0, -100]);
+  const rightParallaxY = useTransform(scrollY, [0, 600], [0, -80]);
 
   return (
-    <section className="relative overflow-hidden bg-white pt-12 pb-40 md:pt-20 md:pb-56 lg:pb-64">
-      {/* Subtle background accents */}
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#f8faff] via-white to-white pt-8 pb-48 md:pt-16 md:pb-64 lg:pb-72">
+      {/* Subtle dot pattern background */}
       <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-      >
-        <div className="absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-accent/5 blur-3xl" />
-        <div className="absolute -bottom-40 left-0 h-[400px] w-[400px] rounded-full bg-primary/5 blur-3xl" />
-      </div>
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: "radial-gradient(circle, #2248F3 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
 
       {/* Centered text content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8">
         <AnimateOnScroll>
           <div className="flex flex-col items-center text-center">
-            <Badge variant="primary" className="mb-6">
-              Trusted by Australian businesses
-            </Badge>
-
-            <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-[#333] sm:text-5xl md:text-6xl lg:text-7xl">
-              A fullstack senior dev team for the price of{" "}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                one local engineer
-              </span>
+            <h1 className="max-w-5xl text-[2.75rem] leading-[1.1] font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+              <span className="bg-gradient-to-r from-[#1a1a1a] via-[#2248F3] to-[#5EDFFF] bg-clip-text text-transparent">
+                A fullstack senior dev team
+              </span>{" "}
+              <span className="text-[#1a1a1a]">for the price of one local engineer</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg text-gray-500 md:text-xl">
-              Supercharge your tech team, move fast, deliver quality, and keep
+            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#555] md:text-xl">
+              Turbocharge your tech team, move fast, deliver quality, and keep
               costs down with a battle-tested senior engineering team from
-              Indonesia, ready to start today.
+              Indonesia, ready to start today
             </p>
 
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-              <Button as="a" href="https://calendar.google.com" size="lg">
-                Book Discovery Call
-              </Button>
-              <Button as="a" href="#pricing" variant="outline" size="lg">
-                See Pricing
-              </Button>
+            <div className="mt-10">
+              <a
+                href="https://calendar.google.com"
+                className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white transition-all hover:bg-black hover:shadow-xl hover:scale-[1.02]"
+              >
+                Book discovery call
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
             </div>
           </div>
         </AnimateOnScroll>
-
-        {/* Client Logo Strip */}
-        <AnimateOnScroll className="mt-16 md:mt-20">
-          <p className="mb-6 text-center text-sm font-medium text-gray-400">
-            Trusted by teams at
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-            {clientLogos.map((name) => (
-              <span
-                key={name}
-                className="text-lg font-semibold text-gray-300 transition-colors hover:text-gray-500"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
-        </AnimateOnScroll>
       </div>
 
-      {/* Left character — parallax + entrance */}
+      {/* Left character — flush left, aligned with subtitle */}
       <motion.div
-        className="absolute -bottom-8 -left-8 z-0 hidden md:block md:left-0 lg:left-[5%]"
+        className="absolute bottom-[15%] left-0 z-0 hidden md:block"
         style={{ y: leftParallaxY }}
       >
         <motion.div
@@ -108,31 +78,33 @@ export function HeroSection() {
           <Image
             src="/illustrations/team-male.png"
             alt="Senior developer character"
-            width={400}
-            height={400}
-            sizes="(min-width: 1280px) 340px, (min-width: 768px) 260px, 200px"
-            className="w-[200px] drop-shadow-2xl md:w-[260px] lg:w-[340px]"
+            width={600}
+            height={600}
+            priority
+            sizes="(min-width: 1280px) 480px, (min-width: 768px) 360px, 300px"
+            className="w-[300px] drop-shadow-2xl md:w-[360px] lg:w-[480px]"
           />
         </motion.div>
       </motion.div>
 
-      {/* Right character — parallax + entrance */}
+      {/* Right character — flush right, aligned with subtitle */}
       <motion.div
-        className="absolute -bottom-8 -right-8 z-0 hidden md:block md:right-0 lg:right-[5%]"
+        className="absolute bottom-[15%] right-0 z-0 hidden md:block"
         style={{ y: rightParallaxY }}
       >
         <motion.div
           initial={characterEntrance.initial}
           animate={characterEntrance.animate}
-          transition={characterEntrance.transition}
+          transition={{ ...characterEntrance.transition, delay: 0.8 }}
         >
           <Image
-            src="/illustrations/team-female.png"
+            src="/illustrations/team-male-2.png"
             alt="Senior developer character"
-            width={400}
-            height={400}
-            sizes="(min-width: 1280px) 340px, (min-width: 768px) 260px, 200px"
-            className="w-[200px] drop-shadow-2xl md:w-[260px] lg:w-[340px]"
+            width={600}
+            height={600}
+            priority
+            sizes="(min-width: 1280px) 480px, (min-width: 768px) 360px, 300px"
+            className="w-[300px] drop-shadow-2xl md:w-[360px] lg:w-[480px]"
           />
         </motion.div>
       </motion.div>

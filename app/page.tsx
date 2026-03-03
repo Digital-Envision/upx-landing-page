@@ -1,4 +1,5 @@
-import { Navbar } from "@/components/layout/navbar";
+import Link from "next/link";
+import { Logo } from "@/components/logo";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/sections/hero";
 import { PainPointsSection } from "@/components/sections/pain-points";
@@ -17,7 +18,14 @@ import { CTASection } from "@/components/sections/cta";
 export default function Home() {
   return (
     <>
-      <Navbar />
+      {/* Logo — top left, not sticky, matches hero bg */}
+      <div className="bg-[#f8faff]">
+        <div className="mx-auto max-w-7xl px-6 pt-6 lg:px-8">
+          <Link href="/">
+            <Logo width={130} height={34} />
+          </Link>
+        </div>
+      </div>
       <main>
         <HeroSection />
         <PainPointsSection />

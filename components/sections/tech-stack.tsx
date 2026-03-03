@@ -17,7 +17,7 @@ import {
   SiMongodb,
   SiTailwindcss,
   SiVuedotjs,
-  SiAngular,
+  SiNestjs,
   SiFlutter,
   SiJira,
   SiFigma,
@@ -50,7 +50,7 @@ const row2: TechItem[] = [
   { name: "Vue.js", icon: <SiVuedotjs className="h-8 w-8 text-[#4FC08D]" /> },
   { name: "Java", icon: <FaJava className="h-8 w-8 text-[#ED8B00]" /> },
   { name: "Go", icon: <SiGo className="h-8 w-8 text-[#00ADD8]" /> },
-  { name: "Angular", icon: <SiAngular className="h-8 w-8 text-[#DD0031]" /> },
+  { name: "NestJS", icon: <SiNestjs className="h-8 w-8 text-[#E0234E]" /> },
   { name: "Flutter", icon: <SiFlutter className="h-8 w-8 text-[#02569B]" /> },
   { name: "Jira", icon: <SiJira className="h-8 w-8 text-[#0052CC]" /> },
   { name: "Figma", icon: <SiFigma className="h-8 w-8 text-[#F24E1E]" /> },
@@ -58,11 +58,12 @@ const row2: TechItem[] = [
 
 function TechIcon({ name, icon }: TechItem) {
   return (
-    <div className="flex shrink-0 flex-col items-center justify-center gap-2 rounded-2xl bg-[#F5F5F5] p-4 shadow-sm transition-shadow hover:shadow-md"
+    <div
+      className="flex shrink-0 flex-col items-center justify-center gap-2 rounded-2xl bg-[#F5F5F5] p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:bg-white"
       style={{ width: 100, height: 100 }}
     >
       {icon}
-      <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
+      <span className="whitespace-nowrap text-xs font-medium text-[#555]">
         {name}
       </span>
     </div>
@@ -74,21 +75,21 @@ export function TechStackSection() {
   const row2Doubled = [...row2, ...row2];
 
   return (
-    <section className="overflow-hidden bg-white py-16 md:py-24">
+    <section className="overflow-hidden bg-[#FAFBFF] py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <AnimateOnScroll>
           <div className="mb-12 text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-[#333] sm:text-3xl">
-              Technologies our teams work with
-            </h2>
-            <p className="mt-3 text-gray-500">
-              Expertise across the modern tech stack
+            <h1 className="text-3xl font-bold tracking-tight text-[#1a1a1a] sm:text-4xl md:text-5xl">
+              We work with all technologies and stacks
+            </h1>
+            <p className="mt-4 text-lg text-[#555]">
+              Frontend, backend, mobile, cloud — whatever you build on, we&apos;re already fluent
             </p>
           </div>
         </AnimateOnScroll>
       </div>
 
-      {/* Row 1 — left to right */}
+      {/* Row 1 */}
       <div
         className="relative mb-5"
         style={{
@@ -105,7 +106,7 @@ export function TechStackSection() {
         </div>
       </div>
 
-      {/* Row 2 — right to left */}
+      {/* Row 2 */}
       <div
         className="relative"
         style={{
