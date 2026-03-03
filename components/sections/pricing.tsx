@@ -1,9 +1,9 @@
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 
 const pricingRows = [
-  { resource: "3 x senior developers", cost: "$12,000", isBold: true },
-  { resource: "1 x technical lead / PM", cost: "Included", isBold: true },
-  { resource: "1 x quality assurance", cost: "Included", isBold: true },
+  { resource: "3 x Senior Developers", cost: "AU$18,000", isBold: true },
+  { resource: "1 x Technical Lead / PM", cost: "Included", isBold: true },
+  { resource: "1 x QA Engineer", cost: "Included", isBold: true },
 ];
 
 export function PricingSection() {
@@ -17,9 +17,9 @@ export function PricingSection() {
               Simple, affordable pricing
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-[#555]">
-              We charge $4,000 USD/mo per developer and we include a CTO level
+              We charge $6,000 AUD/mo per developer and we include a CTO level
               technical lead/PM and QA resource at no extra cost — minimum of 3
-              developers
+              developers.
             </p>
           </div>
         </AnimateOnScroll>
@@ -49,7 +49,7 @@ export function PricingSection() {
             {/* Total row */}
             <div className="flex items-center justify-between border-t border-gray-200 px-8 py-5">
               <span className="text-base font-medium text-[#3B82F6]">Total</span>
-              <span className="text-base font-bold text-[#3B82F6]">$12,000</span>
+              <span className="text-base font-bold text-[#3B82F6]">AU$18,000</span>
             </div>
           </div>
         </AnimateOnScroll>
@@ -57,8 +57,7 @@ export function PricingSection() {
         {/* Savings note */}
         <AnimateOnScroll>
           <p className="mt-6 text-center text-sm text-[#555]">
-            Save up to 60% compared to local hiring. No superannuation,
-            benefits, or overhead costs.
+            Save up to 60% compared to local hiring. No superannuation, additional benefits, or overhead costs.
           </p>
         </AnimateOnScroll>
       </div>

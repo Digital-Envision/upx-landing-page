@@ -9,29 +9,29 @@ const painPoints = [
   {
     headline: "You want to ship fast, but hiring locally takes too long",
     description:
-      "Recruiting seniors takes months, and onboarding plus team cohesion add further delays before you see results",
+      "Recruiting senior staff takes months, and onboarding plus team cohesion add further delays before you see results.",
     image: "/illustrations/pain-time.png",
     imageAlt: "Calendar and clock showing wasted time",
   },
   {
     headline: "It also burns through your runway a lot faster",
     description:
-      "Senior developers drain budget quickly — burning cash before your team even has the chance to scale",
+      "Senior developers drain budget quickly, burning cash before your team even has the chance to scale.",
     image: "/illustrations/pain-money.png",
     imageAlt: "Burning money with declining chart",
   },
   {
     headline:
-      "Skip the hiring cycle — scale today with a team that plugs right in",
+      "Skip the hiring cycle, scale today with a team that plugs right in",
     description:
       "No drawn-out hiring cycles, no messy onboarding. Our teams are built to integrate seamlessly with yours from day one.",
     image: "/illustrations/pain-puzzle.png",
     imageAlt: "Puzzle pieces connecting seamlessly",
   },
   {
-    headline: "And maximise your budget with rockstar developers",
+    headline: "And maximise your budget with Rockstar developers",
     description:
-      "Senior teams of devs, QA, and PMs who've shipped together before — cohesive, proven, and delivering from day one.",
+      "Senior teams of devs, QA, and PMs who've worked together before: cohesive, proven, and delivering from day one.",
     image: "/illustrations/pain-team.png",
     imageAlt: "Superhero developer team",
   },
