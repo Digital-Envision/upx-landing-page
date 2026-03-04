@@ -33,7 +33,7 @@ const faqs = [
   {
     question: "Can we scale up or down?",
     answer:
-      "Yes. You can scale up, scale down, or pause at any time with 30 days' notice. No long-term lock-in contracts.",
+      "Yes. After the initial 3-month minimum term, you can scale up, scale down, or pause at any time with 30 days' notice.",
   },
   {
     question: "Do we need to manage HR, payroll, or benefits?",

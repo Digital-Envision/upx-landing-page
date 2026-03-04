@@ -23,7 +23,7 @@ export function HeroSection() {
   const rightParallaxY = useTransform(scrollY, [0, 600], [0, -80]);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#f8faff] via-white to-white pt-8 pb-48 md:pt-16 md:pb-64 lg:pb-72">
+    <section id="hero" className="relative overflow-hidden bg-gradient-to-b from-[#f8faff] via-white to-white pt-8 pb-48 md:pt-16 md:pb-64 lg:pb-72">
       {/* Subtle dot pattern background */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
@@ -38,7 +38,7 @@ export function HeroSection() {
         <AnimateOnScroll>
           <div className="flex flex-col items-center text-center">
             <h1 className="max-w-5xl text-[2.75rem] leading-[1.1] font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
-              <span className="bg-gradient-to-r from-[#1a1a1a] via-[#2248F3] to-[#5EDFFF] bg-clip-text text-transparent">
+              <span className="sm:whitespace-nowrap bg-gradient-to-r from-[#1a1a1a] via-[#2248F3] to-[#5EDFFF] bg-clip-text text-transparent">
                 Ship your roadmap faster
               </span>{" "}
               <span className="text-[#1a1a1a]">with a stable senior dev team (embedded, not black-boxed)</span>

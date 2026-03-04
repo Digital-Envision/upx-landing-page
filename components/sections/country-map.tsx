@@ -144,10 +144,14 @@ export function CountryMapSection() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl lg:text-[4rem]">
-              The top 1% of Indonesia&apos;s engineering talent
+              The{" "}
+              <span className="bg-gradient-to-r from-[#1a1a1a] via-[#2248F3] to-[#5EDFFF] bg-clip-text text-transparent">
+                top 3%
+              </span>{" "}
+              of Indonesia&apos;s engineering talent
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-[#555]">
-              We recruit Indonesia&apos;s top 1% of engineers — smart,
+              We recruit Indonesia&apos;s top 3% of engineers — smart,
               hardworking, and rigorously trained to operate as a cohesive unit
               that delivers at lightning speed and quality
             </p>

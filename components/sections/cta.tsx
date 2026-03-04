@@ -18,6 +18,7 @@ export function CTASection() {
 
   return (
     <section
+      id="final-cta"
       ref={sectionRef}
       className="relative overflow-hidden rounded-3xl mx-4 my-8 md:mx-8 lg:mx-16"
       style={{ backgroundColor: "#FFF3E0", minHeight: 500 }}
@@ -81,20 +82,20 @@ export function CTASection() {
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.3 }}
       >
         <h2 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl">
-          Let&apos;s turbocharge
+          Ready to add a senior pod
         </h2>
         <h2 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl">
-          your tech team today
+          in 2–4 weeks?
         </h2>
         <p className="mx-auto mt-6 max-w-xl text-lg font-medium text-[#555]">
-          Move faster, ship better, and keep costs under control
+          Book a short technical call. We&apos;ll confirm fit, map the first 2 weeks, and show you exactly how we&apos;ll integrate.
         </p>
         <div className="mt-10">
           <a
             href="https://calendar.google.com"
             className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white transition-all hover:bg-black hover:shadow-xl hover:scale-[1.02]"
           >
-            Book discovery call
+            Book a 15-minute Technical Fit Call
             <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
               <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>

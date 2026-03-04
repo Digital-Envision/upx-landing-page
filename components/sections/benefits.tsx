@@ -3,68 +3,115 @@
 import { useRef, useCallback, type ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
 
-const benefits = [
+const coreOffer = [
   {
-    title: "No HR headaches",
-    description:
-      "Forget hiring, firing, and performance reviews, we handle it all so you can focus on shipping",
+    title: "3× Senior Engineers",
+    description: "Frontend, backend, or fullstack — matched to your stack and scoped to your roadmap.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
       </svg>
     ),
   },
   {
-    title: "Scale up and down easily",
-    description:
-      "Add firepower when you need it, trim back when you don't — flexibility built in",
+    title: "Tech Lead / PM included",
+    description: "Delivery ownership, stakeholder comms, sprint planning — all handled without adding to your management load.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
       </svg>
     ),
   },
   {
-    title: "No hidden employment costs",
-    description:
-      "Skip superannuation, benefits, and overheads, you only pay for the team",
+    title: "QA included",
+    description: "Test planning, regression suites, and release confidence built into every sprint — not bolted on at the end.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+      </svg>
+    ),
+  },
+];
+
+const deliverySystem = [
+  {
+    title: "Weekly planning + daily async updates",
+    description: "Sprint kickoffs, daily Slack standups, and end-of-week summaries — full visibility without micromanagement.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
       </svg>
     ),
   },
   {
-    title: "With you for the long haul",
-    description:
-      "Our teams stay together and stay with you — providing stability, loyalty, and continuity as your roadmap grows.",
+    title: "PR-first workflow + code reviews",
+    description: "Every change goes through peer review. Your standards, your conventions, enforced consistently.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
       </svg>
     ),
   },
   {
-    title: "Relentless work ethic",
-    description:
-      "Handpicked from Indonesia's top 1%, our engineers go above and beyond to get the job done.",
+    title: "QA gates before every release",
+    description: "No feature ships without QA sign-off. Test plans, regression checks, and a clear definition of done.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
     ),
   },
   {
-    title: "A unit, not individuals",
-    description:
-      "Every team has shipped products together before, bringing instant cohesion, trust, and speed from day one.",
+    title: "Transparent velocity reporting",
+    description: "Cycle time, throughput, blockers — reported weekly so you always know where your roadmap stands.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
       </svg>
     ),
+  },
+];
+
+const bonuses = [
+  {
+    title: "\"First 10 Days\" Onboarding Blueprint",
+    description: "Plug-and-play PDF + checklist: access, repos, environments, coding standards, PR workflow, QA gates.",
+  },
+  {
+    title: "Delivery Health Check (90 mins)",
+    description: "Quick audit of bottlenecks — CI time, PR review latency, environment pain — plus top 5 fixes, in writing.",
+  },
+  {
+    title: "Architecture & Tech Debt Triage Workshop",
+    description: "2-hour session to map top risk areas + produce a ranked tech-debt backlog with impact vs effort scores.",
+  },
+  {
+    title: "Security & SDLC Baseline Checklist",
+    description: "Secrets handling, IAM basics, branch protections, logging/PII, vuln scanning — CTO-friendly one-pager.",
+  },
+  {
+    title: "\"Cost vs Local Hiring\" Calculator",
+    description: "Transparent comparison: salary, super, recruitment time, contractor churn, and true loaded cost.",
+  },
+  {
+    title: "Engineering Hiring Scorecard + Interview Kit",
+    description: "Rubrics, sample questions, and take-home standards to help your own hiring process too.",
+  },
+  {
+    title: "CI/CD Quick Wins Pack",
+    description: "Caching patterns, parallelisation ideas, flaky test triage, and a PR checks baseline to ship faster.",
+  },
+  {
+    title: "Observability Starter Pack",
+    description: "Suggested SLOs, error budget basics, and \"what to instrument first\" (Sentry/Datadog/New Relic ready).",
+  },
+  {
+    title: "Release Readiness Template",
+    description: "A one-pager Definition of Done + QA gates your whole Eng/Product org can align on.",
+  },
+  {
+    title: "Knowledge Retention System Setup",
+    description: "Notion/Confluence structure + tribal knowledge capture rituals: ADR template, runbooks, onboarding notes.",
   },
 ];
 
@@ -105,39 +152,118 @@ function TiltCard({ children, className = "" }: { children: ReactNode; className
 
 export function BenefitsSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.15 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   return (
     <section id="services" className="bg-white py-24 md:py-32">
       <div ref={ref} className="mx-auto max-w-6xl px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {benefits.map((benefit, i) => (
-            <motion.div
-              key={benefit.title}
-              initial={{ y: 20, opacity: 0 }}
-              animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-              transition={{
-                duration: 0.8,
-                ease: [0.16, 1, 0.3, 1],
-                delay: 0.1 + i * 0.08,
-              }}
-            >
-              <TiltCard>
-                <div className="animated-border-card group p-8">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f0f4ff] text-[#2248F3] transition-colors group-hover:bg-[#2248F3] group-hover:text-white">
-                    {benefit.icon}
+        {/* Section header */}
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ y: 24, opacity: 0 }}
+          animate={isInView ? { y: 0, opacity: 1 } : { y: 24, opacity: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <h2 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl">
+            What you get
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#555]">
+            The complete offer — core team, delivery system, and everything you need to ship from week one.
+          </p>
+        </motion.div>
+
+        {/* Core Offer */}
+        <motion.div
+          initial={{ y: 16, opacity: 0 }}
+          animate={isInView ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
+          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[#2248F3]">Core Pod</p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {coreOffer.map((item, i) => (
+              <motion.div
+                key={item.title}
+                className="h-full"
+                initial={{ y: 20, opacity: 0 }}
+                animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 + i * 0.08 }}
+              >
+                <TiltCard className="h-full">
+                  <div className="animated-border-card group h-full p-8">
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f0f4ff] text-[#2248F3] transition-colors group-hover:bg-[#2248F3] group-hover:text-white">
+                      {item.icon}
+                    </div>
+                    <h5 className="text-lg font-bold text-[#1a1a1a]">{item.title}</h5>
+                    <p className="mt-3 text-[15px] leading-relaxed text-[#555]">{item.description}</p>
                   </div>
-                  <h5 className="text-lg font-bold text-[#1a1a1a]">
-                    {benefit.title}
-                  </h5>
-                  <p className="mt-3 text-[15px] leading-relaxed text-[#555]">
-                    {benefit.description}
-                  </p>
-                </div>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Delivery System */}
+        <motion.div
+          className="mt-16"
+          initial={{ y: 16, opacity: 0 }}
+          animate={isInView ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+        >
+          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[#2248F3]">Delivery System</p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {deliverySystem.map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ y: 20, opacity: 0 }}
+                animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 + i * 0.08 }}
+              >
+                <TiltCard>
+                  <div className="animated-border-card group p-8">
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f0f4ff] text-[#2248F3] transition-colors group-hover:bg-[#2248F3] group-hover:text-white">
+                      {item.icon}
+                    </div>
+                    <h5 className="text-lg font-bold text-[#1a1a1a]">{item.title}</h5>
+                    <p className="mt-3 text-[15px] leading-relaxed text-[#555]">{item.description}</p>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Bonuses */}
+        <motion.div
+          className="mt-16"
+          initial={{ y: 16, opacity: 0 }}
+          animate={isInView ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
+        >
+          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[#2248F3]">Included Bonuses</p>
+          <div className="rounded-2xl border border-gray-100 bg-[#FAFBFF] p-8">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {bonuses.map((bonus, i) => (
+                <motion.div
+                  key={bonus.title}
+                  className="flex gap-3"
+                  initial={{ x: -8, opacity: 0 }}
+                  animate={isInView ? { x: 0, opacity: 1 } : { x: -8, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.6 + i * 0.05 }}
+                >
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#2248F3]">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                      <path d="M2 5l2.5 2.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[#1a1a1a]">{bonus.title}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-[#666]">{bonus.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

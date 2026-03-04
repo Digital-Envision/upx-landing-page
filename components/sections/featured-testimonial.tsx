@@ -33,13 +33,21 @@ export function FeaturedTestimonial() {
             animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.4 }}
           >
-            <Image
-              src="/illustrations/chat-baloon-lorem.png"
-              alt=""
-              width={400}
-              height={267}
-              className="w-full drop-shadow-md"
-            />
+            <div className="relative">
+              <Image
+                src="/illustrations/chat-baloon-empty.png"
+                alt=""
+                aria-hidden="true"
+                width={400}
+                height={267}
+                className="w-full drop-shadow-md"
+              />
+              <div className="absolute inset-0 flex items-center px-[22%] pb-[20%] pt-[8%]">
+                <p className="text-center text-[15px] font-bold leading-relaxed text-white lg:text-[16px]">
+                  &ldquo;Upscalix helped us source and hire amazing talent in Indonesia who were and still are instrumental in bringing our original vision to life.&rdquo;
+                </p>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
 
@@ -52,22 +60,22 @@ export function FeaturedTestimonial() {
         >
           <div className="flex items-center gap-4">
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/jacob-banks-685871a3/"
               target="_blank"
               rel="noopener noreferrer"
               className="group"
               aria-label="Joshua Suntup on LinkedIn"
             >
               <h1 className="text-3xl font-bold text-[#1a1a1a] underline decoration-transparent transition-colors group-hover:decoration-[#1a1a1a] md:text-4xl">
-                Joshua Suntup
+                Jacob Banks
               </h1>
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/jacob-banks-685871a3/"
               target="_blank"
               rel="noopener noreferrer"
               className="shrink-0 text-[#0A66C2] transition-opacity hover:opacity-80"
-              aria-label="Joshua Suntup on LinkedIn"
+              aria-label="Jacob Banks on LinkedIn"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -79,7 +87,7 @@ export function FeaturedTestimonial() {
             </a>
           </div>
           <h1 className="mt-2 text-2xl font-bold text-[#555] md:text-3xl">
-            Head of product @ Lessn
+            CEO @ Sophiie.ai
           </h1>
         </motion.div>
       </div>
@@ -93,13 +101,21 @@ export function FeaturedTestimonial() {
           animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.2 }}
         >
-          <Image
-            src="/illustrations/chat-baloon-lorem.png"
-            alt="Testimonial from Joshua Suntup"
-            width={400}
-            height={267}
-            className="w-full drop-shadow-md"
-          />
+          <div className="relative">
+            <Image
+              src="/illustrations/chat-baloon-empty.png"
+              alt=""
+              aria-hidden="true"
+              width={400}
+              height={267}
+              className="w-full drop-shadow-md"
+            />
+            <div className="absolute inset-0 flex items-center px-[22%] pb-[20%] pt-[8%]">
+              <p className="text-center text-[15px] font-bold leading-relaxed text-white">
+                &ldquo;Upscalix helped us source and hire amazing talent in Indonesia who were and still are instrumental in bringing our original vision to life.&rdquo;
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Avatar + name row */}
