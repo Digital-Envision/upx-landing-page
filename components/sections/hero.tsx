@@ -39,27 +39,31 @@ export function HeroSection() {
           <div className="flex flex-col items-center text-center">
             <h1 className="max-w-5xl text-[2.75rem] leading-[1.1] font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
               <span className="bg-gradient-to-r from-[#1a1a1a] via-[#2248F3] to-[#5EDFFF] bg-clip-text text-transparent">
-                A fullstack senior dev team
+                Ship your roadmap faster
               </span>{" "}
-              <span className="text-[#1a1a1a]">for the price of one local engineer</span>
+              <span className="text-[#1a1a1a]">with a stable senior dev team (embedded, not black-boxed)</span>
             </h1>
 
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#555] md:text-xl">
-              Turbocharge your tech team, move fast, deliver quality, and keep
-              costs down with a battle-tested senior engineering team from
-              Indonesia, ready to start today
+              Interview-first senior engineers in Indonesia, integrated into your Jira/GitHub workflow with direct communication, code reviews, and quality gates from day one.
             </p>
 
-            <div className="mt-10">
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <a
                 href="https://calendar.google.com"
                 className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white transition-all hover:bg-black hover:shadow-xl hover:scale-[1.02]"
               >
-                Book discovery call
+                Book a 15-minute Technical Fit Call
                 <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
                   <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </a>
+              <button className="inline-flex items-center gap-2 rounded-full border border-[#1a1a1a] px-8 py-4 text-base font-medium text-[#1a1a1a] transition-all hover:bg-[#f0f0f0] hover:scale-[1.02]">
+                &ldquo;First 10 Days&rdquo; onboarding plan
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
         </AnimateOnScroll>
