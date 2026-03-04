@@ -79,16 +79,16 @@ export function BenefitsSection() {
           {benefits.map((benefit, i) => (
             <motion.div
               key={benefit.title}
-              initial={{ y: 60, opacity: 0 }}
-              animate={isInView ? { y: 0, opacity: 1 } : { y: 60, opacity: 0 }}
+              className="transition-transform duration-300 ease-out"
+              initial={{ y: 20, opacity: 0 }}
+              animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
               transition={{
-                type: "spring",
-                stiffness: 400,
-                damping: 30,
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
                 delay: 0.1 + i * 0.08,
               }}
             >
-              <div className="group rounded-2xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-[#2248F3]/30 hover:shadow-lg hover:-translate-y-1">
+              <div className="animated-border-card group p-8">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f0f4ff] text-[#2248F3] transition-colors group-hover:bg-[#2248F3] group-hover:text-white">
                   {benefit.icon}
                 </div>
