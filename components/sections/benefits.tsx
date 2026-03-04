@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useCallback, type ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
 
 const benefits = [
@@ -68,6 +68,41 @@ const benefits = [
   },
 ];
 
+function TiltCard({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const rotateX = ((y - cy) / cy) * -4;
+    const rotateY = ((x - cx) / cx) * 4;
+    el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const el = ref.current;
+    if (el) {
+      el.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+    }
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-transform duration-300 ease-out ${className}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function BenefitsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.15 });
@@ -79,7 +114,6 @@ export function BenefitsSection() {
           {benefits.map((benefit, i) => (
             <motion.div
               key={benefit.title}
-              className="transition-transform duration-300 ease-out"
               initial={{ y: 20, opacity: 0 }}
               animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
               transition={{
@@ -88,17 +122,19 @@ export function BenefitsSection() {
                 delay: 0.1 + i * 0.08,
               }}
             >
-              <div className="animated-border-card group p-8">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f0f4ff] text-[#2248F3] transition-colors group-hover:bg-[#2248F3] group-hover:text-white">
-                  {benefit.icon}
+              <TiltCard>
+                <div className="animated-border-card group p-8">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f0f4ff] text-[#2248F3] transition-colors group-hover:bg-[#2248F3] group-hover:text-white">
+                    {benefit.icon}
+                  </div>
+                  <h5 className="text-lg font-bold text-[#1a1a1a]">
+                    {benefit.title}
+                  </h5>
+                  <p className="mt-3 text-[15px] leading-relaxed text-[#555]">
+                    {benefit.description}
+                  </p>
                 </div>
-                <h5 className="text-lg font-bold text-[#1a1a1a]">
-                  {benefit.title}
-                </h5>
-                <p className="mt-3 text-[15px] leading-relaxed text-[#555]">
-                  {benefit.description}
-                </p>
-              </div>
+              </TiltCard>
             </motion.div>
           ))}
         </div>
