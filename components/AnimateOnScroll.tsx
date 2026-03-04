@@ -43,7 +43,7 @@ const variants = {
       stiffness: 400,
       damping: 30,
       mass: 1,
-      delay: 0.6,
+      delay: 0.3,
     },
   },
 };

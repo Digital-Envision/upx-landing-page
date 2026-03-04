@@ -67,7 +67,7 @@ export function HeroSection() {
 
       {/* Left character — flush left, aligned with subtitle */}
       <motion.div
-        className="absolute bottom-[15%] left-0 z-0 hidden md:block"
+        className="absolute bottom-0 left-0 z-0 md:bottom-[15%]"
         style={{ y: leftParallaxY }}
       >
         <motion.div
@@ -81,15 +81,15 @@ export function HeroSection() {
             width={600}
             height={600}
             priority
-            sizes="(min-width: 1280px) 480px, (min-width: 768px) 360px, 300px"
-            className="w-[300px] drop-shadow-2xl md:w-[360px] lg:w-[480px]"
+            sizes="(min-width: 1280px) 480px, (min-width: 768px) 360px, 160px"
+            className="w-[160px] drop-shadow-2xl md:w-[360px] lg:w-[480px]"
           />
         </motion.div>
       </motion.div>
 
       {/* Right character — flush right, aligned with subtitle */}
       <motion.div
-        className="absolute bottom-[15%] right-0 z-0 hidden md:block"
+        className="absolute bottom-0 right-0 z-0 md:bottom-[15%]"
         style={{ y: rightParallaxY }}
       >
         <motion.div
@@ -103,8 +103,8 @@ export function HeroSection() {
             width={600}
             height={600}
             priority
-            sizes="(min-width: 1280px) 480px, (min-width: 768px) 360px, 300px"
-            className="w-[300px] drop-shadow-2xl md:w-[360px] lg:w-[480px]"
+            sizes="(min-width: 1280px) 480px, (min-width: 768px) 360px, 160px"
+            className="w-[160px] drop-shadow-2xl md:w-[360px] lg:w-[480px]"
           />
         </motion.div>
       </motion.div>

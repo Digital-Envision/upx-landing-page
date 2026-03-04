@@ -22,9 +22,26 @@ export function CTASection() {
       className="relative overflow-hidden rounded-3xl mx-4 my-8 md:mx-8 lg:mx-16"
       style={{ backgroundColor: "#FFF3E0", minHeight: 500 }}
     >
-      {/* Left lightning bolt — bigger */}
+      {/* Mobile: single bolt centered above text */}
       <motion.div
-        className="pointer-events-none absolute -bottom-8 -left-4 sm:left-2 lg:left-[8%]"
+        className="relative z-0 mx-auto mt-12 flex justify-center md:hidden"
+        initial={{ y: -40, opacity: 0 }}
+        animate={isInView ? { y: 0, opacity: 1 } : { y: -40, opacity: 0 }}
+        transition={boltTransition}
+        aria-hidden="true"
+      >
+        <Image
+          src="/illustrations/cta-lightning.png"
+          alt=""
+          width={400}
+          height={600}
+          className="h-[200px] w-auto drop-shadow-xl"
+        />
+      </motion.div>
+
+      {/* Desktop: left lightning bolt */}
+      <motion.div
+        className="pointer-events-none absolute -bottom-8 -left-4 hidden sm:left-2 md:block lg:left-[8%]"
         initial={{ x: -120, opacity: 0 }}
         animate={isInView ? { x: 0, opacity: 1 } : { x: -120, opacity: 0 }}
         transition={boltTransition}
@@ -39,9 +56,9 @@ export function CTASection() {
         />
       </motion.div>
 
-      {/* Right lightning bolt (mirrored) — bigger */}
+      {/* Desktop: right lightning bolt (mirrored) */}
       <motion.div
-        className="pointer-events-none absolute -bottom-8 -right-4 sm:right-2 lg:right-[8%]"
+        className="pointer-events-none absolute -bottom-8 -right-4 hidden sm:right-2 md:block lg:right-[8%]"
         initial={{ x: 120, opacity: 0 }}
         animate={isInView ? { x: 0, opacity: 1 } : { x: 120, opacity: 0 }}
         transition={{ ...boltTransition, delay: 0.35 }}
@@ -58,7 +75,7 @@ export function CTASection() {
 
       {/* Centered text content */}
       <motion.div
-        className="relative z-10 mx-auto max-w-3xl px-6 py-24 text-center md:py-32 lg:px-8"
+        className="relative z-10 mx-auto max-w-3xl px-6 py-12 text-center md:py-32 lg:px-8"
         initial={{ y: 40, opacity: 0 }}
         animate={isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.3 }}

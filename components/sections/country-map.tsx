@@ -129,11 +129,11 @@ export function CountryMapSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-white"
+      className="relative overflow-x-clip bg-white"
       style={{ height: "280vh" }}
     >
       {/* Sticky container — stays pinned for the entire scroll range */}
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
           {/* ── Heading ────────────────────────────────── */}
           <motion.div
