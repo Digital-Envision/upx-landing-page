@@ -7,31 +7,30 @@ import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 
 const painPoints = [
   {
-    headline: "You want to ship fast, but hiring locally takes too long",
+    headline: "Senior hires take months, then weeks to ramp",
     description:
-      "Recruiting seniors takes months, and onboarding plus team cohesion add further delays before you see results",
+      "Recruiting senior staff takes 3–6 months on average. Then comes onboarding, team cohesion, ramp time — all before you see a single commit land in production.",
     image: "/illustrations/pain-time.png",
     imageAlt: "Calendar and clock showing wasted time",
   },
   {
-    headline: "It also burns through your runway a lot faster",
+    headline: "Contractors churn and take context with them",
     description:
-      "Senior developers drain budget quickly — burning cash before your team even has the chance to scale",
+      "Contractors leave when a better rate appears. And when they go, they take the architecture knowledge, the edge cases, and the delivery momentum with them.",
     image: "/illustrations/pain-money.png",
     imageAlt: "Burning money with declining chart",
   },
   {
-    headline:
-      "Skip the hiring cycle — scale today with a team that plugs right in",
+    headline: "Roadmap expands faster than headcount",
     description:
-      "No drawn-out hiring cycles, no messy onboarding. Our teams are built to integrate seamlessly with yours from day one.",
+      "Product keeps adding scope. Engineering capacity stays flat. The backlog grows. Velocity drops. The team burns out trying to keep up.",
     image: "/illustrations/pain-puzzle.png",
     imageAlt: "Puzzle pieces connecting seamlessly",
   },
   {
-    headline: "And maximise your budget with rockstar developers",
+    headline: "Tech debt grows while Product wants 'one more thing'",
     description:
-      "Senior teams of devs, QA, and PMs who've shipped together before — cohesive, proven, and delivering from day one.",
+      "Every sprint is a negotiation between stability and speed. Without a stable senior team, quality gets sacrificed to hit deadlines — and the debt compounds.",
     image: "/illustrations/pain-team.png",
     imageAlt: "Superhero developer team",
   },
@@ -51,7 +50,7 @@ function ParallaxBlock({
   const imageY = useTransform(scrollYProgress, [0, 1], [80, -80]);
 
   return (
-    <div ref={blockRef} className="py-[10vh] md:py-[12vh]">
+    <div ref={blockRef} className="py-[2.5vh] md:py-[3vh]">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-24">
           {/* Image — left side, bigger */}
@@ -85,10 +84,32 @@ function ParallaxBlock({
 export function PainPointsSection() {
   return (
     <section id="how-it-works" className="bg-[#FAFBFF]">
-      {/* Parallax blocks — no header section, straight into blocks like TurboTeam */}
+      {/* Section header */}
+      <div className="mx-auto max-w-7xl px-6 pt-24 pb-4 text-center lg:px-8">
+        <AnimateOnScroll>
+          <h2 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl">
+            If you&apos;re hiring in Australia, you already know the pain
+          </h2>
+        </AnimateOnScroll>
+      </div>
+
+      {/* Parallax blocks */}
       {painPoints.map((point, index) => (
         <ParallaxBlock key={index} point={point} />
       ))}
+
+      {/* Bridge line */}
+      <div className="mx-auto max-w-3xl px-6 pb-24 text-center lg:px-8">
+        <AnimateOnScroll>
+          <p className="text-xl font-medium leading-relaxed text-[#1a1a1a] sm:text-2xl">
+            You don&apos;t need &ldquo;more outsourcing.&rdquo; You need{" "}
+            <span className="bg-gradient-to-r from-[#2248F3] to-[#5EDFFF] bg-clip-text text-transparent">
+              a second team that compounds knowledge
+            </span>{" "}
+            and ships predictably.
+          </p>
+        </AnimateOnScroll>
+      </div>
     </section>
   );
 }

@@ -86,13 +86,22 @@ export function PartnerRecommendationsSection() {
                 animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.5 }}
               >
-                <Image
-                  src="/illustrations/chat-baloon-reverse.png"
-                  alt=""
-                  width={400}
-                  height={267}
-                  className="w-full drop-shadow-md"
-                />
+                <div className="relative">
+                  <Image
+                    src="/illustrations/chat-baloon-empty.png"
+                    alt=""
+                    aria-hidden="true"
+                    width={400}
+                    height={267}
+                    className="w-full drop-shadow-md"
+                    style={{ transform: "scaleX(-1)" }}
+                  />
+                  <div className="absolute inset-0 flex items-center px-[22%] pb-[20%] pt-[8%]">
+                    <p className="text-center text-[15px] font-bold leading-relaxed text-white lg:text-[16px]">
+                      &ldquo;Their teams plug straight into our portfolio companies. Senior engineers, real ownership, no hand-holding required.&rdquo;
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             </motion.div>
           </div>
@@ -106,13 +115,21 @@ export function PartnerRecommendationsSection() {
               animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.2 }}
             >
-              <Image
-                src="/illustrations/chat-baloon-reverse.png"
-                alt="Testimonial from Michael Torres"
-                width={400}
-                height={267}
-                className="w-full drop-shadow-md"
-              />
+              <div className="relative">
+                <Image
+                  src="/illustrations/chat-baloon-empty.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={400}
+                  height={267}
+                  className="w-full drop-shadow-md"
+                />
+                <div className="absolute inset-0 flex items-center px-[22%] pb-[20%] pt-[8%]">
+                  <p className="text-center text-[15px] font-bold leading-relaxed text-white">
+                    &ldquo;Their teams plug straight into our portfolio companies. Senior engineers, real ownership, no hand-holding required.&rdquo;
+                  </p>
+                </div>
+              </div>
             </motion.div>
 
             {/* Avatar + name row */}
