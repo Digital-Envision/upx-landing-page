@@ -14,17 +14,11 @@ function SpeechBubble({
   return (
     <div className="group/bubble relative">
       <div
-        className="relative overflow-hidden rounded-3xl px-8 py-7 transition-all duration-300 group-hover/bubble:scale-[1.015] sm:px-10 sm:py-8 lg:px-12 lg:py-10"
-        style={{
-          background:
-            "linear-gradient(145deg, #5B9CF5 0%, #3366F5 40%, #2248F3 100%)",
-          boxShadow:
-            "0 12px 40px rgba(34, 72, 243, 0.25), 0 4px 12px rgba(34, 72, 243, 0.1)",
-        }}
+        className="animated-border-card relative overflow-hidden rounded-3xl px-8 py-7 sm:px-10 sm:py-8 lg:px-12 lg:py-10"
       >
         {/* Decorative quotemark */}
         <span
-          className="pointer-events-none absolute -top-4 left-4 select-none font-serif text-8xl font-black leading-none text-white/20 sm:-top-2 sm:left-6 lg:left-8 lg:text-9xl"
+          className="pointer-events-none absolute -top-4 left-4 select-none font-serif text-8xl font-black leading-none text-[#2248F3]/15 sm:-top-2 sm:left-6 lg:left-8 lg:text-9xl"
           aria-hidden="true"
         >
           &ldquo;
@@ -33,7 +27,7 @@ function SpeechBubble({
       </div>
       {/* Tail */}
       <svg
-        className={`absolute -bottom-[15px] h-[16px] w-[24px] text-[#2248F3] ${tailPosition === "left"
+        className={`absolute -bottom-[15px] h-[16px] w-[24px] text-white/55 ${tailPosition === "left"
           ? "left-10 md:left-12 -scale-x-100"
           : tailPosition === "right"
             ? "right-10 md:right-12"
@@ -127,7 +121,7 @@ export function FeaturedTestimonial() {
               }}
             >
               <SpeechBubble tailPosition="left">
-                <p className="relative text-xl font-light italic leading-[1.7] text-white sm:text-xl" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.15)" }}>
+                <p className="relative text-xl font-light leading-[1.7] text-[#1a1a1a] sm:text-xl">
                   &ldquo;Upscalix helped us source and hire amazing talent in Indonesia who were and still are instrumental in bringing our original vision to life.&rdquo;
                 </p>
               </SpeechBubble>
@@ -163,7 +157,7 @@ export function FeaturedTestimonial() {
           transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.2 }}
         >
           <SpeechBubble tailPosition="center">
-            <p className="relative text-lg font-light italic leading-[1.7] text-white sm:text-xl" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.15)" }}>
+            <p className="relative text-lg font-light leading-[1.7] text-[#1a1a1a] sm:text-xl">
               &ldquo;Upscalix helped us source and hire amazing talent in Indonesia who were and still are instrumental in bringing our original vision to life.&rdquo;
             </p>
           </SpeechBubble>
