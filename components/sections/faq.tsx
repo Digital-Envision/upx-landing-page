@@ -58,10 +58,10 @@ const faqs = [
 ];
 
 export function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndices, setOpenIndices] = useState<Set<number>>(new Set());
 
   return (
-    <section className="bg-[#FAFBFF] py-24 md:py-32">
+    <section className="bg-[#FAFBFF] py-16 md:py-20">
       <div className="mx-auto max-w-3xl px-6 lg:px-8">
         {/* Section header */}
         <AnimateOnScroll>
@@ -76,7 +76,7 @@ export function FAQSection() {
         <AnimateOnScroll>
           <div className="space-y-3">
             {faqs.map((faq, index) => {
-              const isOpen = openIndex === index;
+              const isOpen = openIndices.has(index);
               return (
                 <div
                   key={index}
@@ -88,7 +88,12 @@ export function FAQSection() {
                 >
                   <button
                     className="flex w-full items-center justify-between px-6 py-5 text-left"
-                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    onClick={() => setOpenIndices((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(index)) next.delete(index);
+                      else next.add(index);
+                      return next;
+                    })}
                     aria-expanded={isOpen}
                   >
                     <span className="pr-8 text-base font-semibold text-[#1a1a1a]">
