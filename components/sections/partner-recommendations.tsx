@@ -155,7 +155,7 @@ export function PartnerRecommendationsSection() {
               transition={{ type: "spring", stiffness: 300, damping: 35, delay: 0.1 }}
             >
               <Image
-                src="/illustrations/client-3.png"
+                src="/illustrations/client-3.webp"
                 alt="Michael Torres"
                 width={500}
                 height={600}
@@ -187,7 +187,7 @@ export function PartnerRecommendationsSection() {
               transition={{ type: "spring", stiffness: 300, damping: 35, delay: 0.4 }}
             >
               <Image
-                src="/illustrations/client-3-avatar.png"
+                src="/illustrations/client-3-avatar.webp"
                 alt="Michael Torres"
                 width={120}
                 height={120}

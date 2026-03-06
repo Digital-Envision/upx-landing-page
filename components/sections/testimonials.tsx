@@ -159,7 +159,7 @@ export function TestimonialsSection() {
               transition={{ type: "spring", stiffness: 300, damping: 35, delay: 0.1 }}
             >
               <Image
-                src="/illustrations/client-2.png"
+                src="/illustrations/client-2.webp"
                 alt="Thomas Walkley"
                 width={500}
                 height={600}
@@ -191,7 +191,7 @@ export function TestimonialsSection() {
               transition={{ type: "spring", stiffness: 300, damping: 35, delay: 0.4 }}
             >
               <Image
-                src="/illustrations/client-2-avatar.png"
+                src="/illustrations/client-2-avatar.webp"
                 alt="Thomas Walkley"
                 width={120}
                 height={120}

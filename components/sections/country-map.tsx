@@ -7,7 +7,7 @@ import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 /* ──────────────────────────────────────────────────────────
    Avatar configuration
 
-   Individual avatar images (developer-tl/tr/bl/br.png) are
+   Individual avatar images (developer-tl/tr/bl/br.webp) are
    used for each developer portrait.
 
    Avatars:  TL = male + glasses
@@ -23,10 +23,10 @@ import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 type AvatarId = "tl" | "tr" | "bl" | "br";
 
 const avatarSrc: Record<AvatarId, string> = {
-  tl: "/illustrations/developer-tl.png",
-  tr: "/illustrations/developer-tr.png",
-  bl: "/illustrations/developer-bl.png",
-  br: "/illustrations/developer-br.png",
+  tl: "/illustrations/developer-tl.webp",
+  tr: "/illustrations/developer-tr.webp",
+  bl: "/illustrations/developer-bl.webp",
+  br: "/illustrations/developer-br.webp",
 };
 
 interface AvatarConfig {
@@ -165,7 +165,7 @@ export function CountryMapSection() {
             {/* Indonesia map (center) — always visible */}
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
-                src="/illustrations/indonesia-map.png"
+                src="/illustrations/indonesia-map.webp"
                 alt="Map of Indonesia showing developer locations across the archipelago"
                 width={900}
                 height={600}

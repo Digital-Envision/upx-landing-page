@@ -100,7 +100,7 @@ export function FeaturedTestimonial() {
           transition={{ type: "spring", stiffness: 300, damping: 35, delay: 0.1 }}
         >
           <Image
-            src="/illustrations/client-1.png"
+            src="/illustrations/client-1.webp"
             alt="Jacob Banks"
             width={500}
             height={600}
@@ -176,7 +176,7 @@ export function FeaturedTestimonial() {
           transition={{ type: "spring", stiffness: 300, damping: 35, delay: 0.4 }}
         >
           <Image
-            src="/illustrations/client-1-avatar.png"
+            src="/illustrations/client-1-avatar.webp"
             alt="Jacob Banks"
             width={120}
             height={120}

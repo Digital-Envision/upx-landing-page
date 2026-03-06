@@ -80,7 +80,7 @@ export function HeroSection() {
           transition={characterEntrance.transition}
         >
           <Image
-            src="/illustrations/team-male.png"
+            src="/illustrations/team-male.webp"
             alt="Senior developer character"
             width={600}
             height={600}
@@ -102,7 +102,7 @@ export function HeroSection() {
           transition={{ ...characterEntrance.transition, delay: 0.8 }}
         >
           <Image
-            src="/illustrations/team-male-2.png"
+            src="/illustrations/team-male-2.webp"
             alt="Senior developer character"
             width={600}
             height={600}
