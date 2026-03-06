@@ -65,7 +65,7 @@ function StackingCard({
           {/* Monitor mockup — bigger */}
           <div className="flex shrink-0 justify-center md:w-[45%]">
             <Image
-              src="/illustrations/case-study-monitor.png"
+              src="/illustrations/case-study-monitor.webp"
               alt={`${study.company} application dashboard`}
               width={800}
               height={800}

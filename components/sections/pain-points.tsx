@@ -10,28 +10,28 @@ const painPoints = [
     headline: "Senior hires take months, then weeks to ramp",
     description:
       "Recruiting senior staff takes 3–6 months on average. Then comes onboarding, team cohesion, ramp time — all before you see a single commit land in production.",
-    image: "/illustrations/pain-time.png",
+    image: "/illustrations/pain-time.webp",
     imageAlt: "Calendar and clock showing wasted time",
   },
   {
     headline: "Contractors churn and take context with them",
     description:
       "Contractors leave when a better rate appears. And when they go, they take the architecture knowledge, the edge cases, and the delivery momentum with them.",
-    image: "/illustrations/pain-money.png",
+    image: "/illustrations/pain-money.webp",
     imageAlt: "Burning money with declining chart",
   },
   {
     headline: "Roadmap expands faster than headcount",
     description:
       "Product keeps adding scope. Engineering capacity stays flat. The backlog grows. Velocity drops. The team burns out trying to keep up.",
-    image: "/illustrations/pain-puzzle.png",
+    image: "/illustrations/pain-puzzle.webp",
     imageAlt: "Puzzle pieces connecting seamlessly",
   },
   {
     headline: "Tech debt grows while Product wants 'one more thing'",
     description:
       "Every sprint is a negotiation between stability and speed. Without a stable senior team, quality gets sacrificed to hit deadlines — and the debt compounds.",
-    image: "/illustrations/pain-team.png",
+    image: "/illustrations/pain-team.webp",
     imageAlt: "Superhero developer team",
   },
 ];
@@ -50,18 +50,21 @@ function ParallaxBlock({
   const imageY = useTransform(scrollYProgress, [0, 1], [80, -80]);
 
   return (
-    <div ref={blockRef} className="py-[2.5vh] md:py-[3vh]">
+    <div ref={blockRef} className="py-[1.25vh] md:py-[1.5vh]">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-24">
-          {/* Image — left side, bigger */}
+          {/* Image — left side, fixed height container */}
           <div className="flex w-full justify-center lg:w-[45%]">
-            <motion.div style={{ y: imageY }}>
+            <motion.div
+              className="h-[320px] w-[336px] sm:h-[380px] sm:w-[408px] lg:h-[440px] lg:w-[528px]"
+              style={{ y: imageY }}
+            >
               <Image
                 src={point.image}
                 alt={point.imageAlt}
                 width={600}
                 height={600}
-                className="h-[336px] w-[336px] object-contain drop-shadow-2xl sm:h-[408px] sm:w-[408px] lg:h-[528px] lg:w-[528px]"
+                className="h-full w-full object-contain object-center"
               />
             </motion.div>
           </div>

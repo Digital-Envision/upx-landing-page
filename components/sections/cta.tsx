@@ -32,7 +32,7 @@ export function CTASection() {
         aria-hidden="true"
       >
         <Image
-          src="/illustrations/cta-lightning.png"
+          src="/illustrations/cta-lightning.webp"
           alt=""
           width={400}
           height={600}
@@ -49,7 +49,7 @@ export function CTASection() {
         aria-hidden="true"
       >
         <Image
-          src="/illustrations/cta-lightning.png"
+          src="/illustrations/cta-lightning.webp"
           alt=""
           width={400}
           height={600}
@@ -66,7 +66,7 @@ export function CTASection() {
         aria-hidden="true"
       >
         <Image
-          src="/illustrations/cta-lightning.png"
+          src="/illustrations/cta-lightning.webp"
           alt=""
           width={400}
           height={600}
