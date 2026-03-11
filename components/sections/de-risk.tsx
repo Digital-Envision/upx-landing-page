@@ -22,7 +22,7 @@ const items = [
   {
     title: "Continuity if someone leaves",
     description:
-      "Documentation habits, ADRs, and runbooks are part of the team's operating rhythm. If someone leaves, their replacement gets up to speed in days — not months.",
+      "Documentation habits, Architecture Decision Records, and runbooks are part of the team's operating rhythm. If someone leaves, their replacement gets up to speed in days — not months.",
   },
   {
     title: "Predictable delivery, week to week",

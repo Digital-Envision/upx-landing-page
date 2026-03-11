@@ -9,7 +9,6 @@ import { BenefitsSection } from "@/components/sections/benefits";
 import { TechStackSection } from "@/components/sections/tech-stack";
 import { CaseStudiesSection } from "@/components/sections/case-studies";
 import { TestimonialsSection } from "@/components/sections/testimonials";
-import { PartnerRecommendationsSection } from "@/components/sections/partner-recommendations";
 import { DeRiskSection } from "@/components/sections/de-risk";
 import { GuaranteeSection } from "@/components/sections/guarantee";
 import { PricingSection } from "@/components/sections/pricing";
@@ -48,8 +47,7 @@ export default function Home() {
         <CaseStudiesSection />
         {/* 9. Proof: testimonials */}
         <TestimonialsSection />
-        <PartnerRecommendationsSection />
-        {/* 10. De-risk */}
+{/* 10. De-risk */}
         <DeRiskSection />
         {/* 11. Guarantee */}
         <GuaranteeSection />

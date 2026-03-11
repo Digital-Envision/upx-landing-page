@@ -43,7 +43,7 @@ const faqs = [
   {
     question: "How do time zones work?",
     answer:
-      "Our teams are based in Indonesia (WIB/WITA), which provides a 4-hour overlap with AEST. Teams adjust their schedules to maximise overlap with your core working hours.",
+      "We work with the Australian timezone and align with Sydney time. Our staff starts at 6am Indonesian time and finishes at 3pm, allowing maximum overlap with your core working hours.",
   },
   {
     question: "How do you ensure quality?",
