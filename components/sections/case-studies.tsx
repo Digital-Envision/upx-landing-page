@@ -20,25 +20,27 @@ const caseStudies = [
     cardBg: "bg-[#FFF8F0]",
   },
   {
-    company: "EduPlatform",
-    industry: "Edtech",
-    logo: "/illustrations/case-study-logo-edtech.png",
-    demo: "/illustrations/demo-sophiie.webp",
+    company: "Erin Living",
+    industry: "PropTech",
+    logo: "/illustrations/logo-erin.webp",
+    demo: "/illustrations/demo-erin.webp",
     description: () => (
-      <div className="mt-6 text-lg leading-relaxed text-[#555] md:text-xl">
-        <p>Education platform for secondary schools, providing interactive revision tools and resources to over 500,000 students and teachers.</p>
+      <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#555] md:text-xl">
+        <p>Resident management super app for modern residential communities — connecting residents, property managers, and developers through a single platform for amenities, security, and community services.</p>
+        <p>Erin raised <strong>$4M</strong> with Origin Energy after 3 years working with us. They now have a team of <strong>7</strong> and we are on track to grow the team further.</p>
       </div>
     ),
     cardBg: "bg-[#F0F4FF]",
   },
   {
-    company: "ShopLocal",
-    industry: "Marketplace",
-    logo: "/illustrations/case-study-logo-marketplace.png",
-    demo: "/illustrations/demo-sophiie.webp",
+    company: "ENPNT",
+    industry: "Dance Tech",
+    logo: "/illustrations/logo-enpnt.webp",
+    demo: "/illustrations/demo-enpnt.webp",
     description: () => (
-      <div className="mt-6 text-lg leading-relaxed text-[#555] md:text-xl">
-        <p>Australian restaurant-tech platform using dynamic pricing to fill empty tables, serving 2M+ users across 3,000+ venues.</p>
+      <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#555] md:text-xl">
+        <p>Australia&apos;s largest dance directory — connecting dancers with studios nationwide and providing dance schools with management software to run their business efficiently.</p>
+        <p>ENPNT raised <strong>$2M</strong> only after 1 year working with us, and are on track to penetrate the US market with the Upscalix team powering the platform.</p>
       </div>
     ),
     cardBg: "bg-[#FEF2F8]",
@@ -76,14 +78,15 @@ function StackingCard({
       >
         <div className="flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
           {/* Monitor mockup — bigger */}
-          <div className="flex shrink-0 justify-center md:w-[55%]">
-            <Image
-              src={study.demo}
-              alt={`${study.company} application dashboard`}
-              width={1200}
-              height={1200}
-              className="w-full max-w-[600px] drop-shadow-lg"
-            />
+          <div className="flex shrink-0 items-center justify-center md:w-[55%]">
+            <div className="relative h-[320px] w-full max-w-[600px] md:h-[400px]">
+              <Image
+                src={study.demo}
+                alt={`${study.company} application dashboard`}
+                fill
+                className="object-contain drop-shadow-lg"
+              />
+            </div>
           </div>
 
           {/* Content */}
