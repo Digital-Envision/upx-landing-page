@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
+import { HiringCalculatorModal } from "@/components/HiringCalculatorModal";
 
 const characterEntrance = {
   initial: { y: 120, opacity: 0 },
@@ -17,12 +19,14 @@ const characterEntrance = {
 };
 
 export function HeroSection() {
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
   const { scrollY } = useScroll();
 
   const leftParallaxY = useTransform(scrollY, [0, 600], [0, -100]);
   const rightParallaxY = useTransform(scrollY, [0, 600], [0, -80]);
 
   return (
+    <>
     <section id="hero" className="relative overflow-hidden bg-gradient-to-b from-[#f8faff] via-white to-white pt-8 pb-48 md:pt-16 md:pb-64 lg:pb-72">
       {/* Subtle dot pattern background */}
       <div
@@ -49,17 +53,20 @@ export function HeroSection() {
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <a
-                href="https://calendar.google.com"
+              <button
+                onClick={() => window.open("https://links.cornerstoneandcompass.com/widget/bookings/turbo-team", "_blank")}
                 className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white transition-all hover:bg-black hover:shadow-xl hover:scale-[1.02]"
               >
                 Book a 15-minute Technical Fit Call
                 <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
                   <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-              </a>
-              <button className="inline-flex items-center gap-2 rounded-full border border-[#1a1a1a] px-8 py-4 text-base font-medium text-[#1a1a1a] transition-all hover:bg-[#f0f0f0] hover:scale-[1.02]">
-                &ldquo;First 10 Days&rdquo; onboarding plan
+              </button>
+              <button
+                onClick={() => setCalculatorOpen(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-[#1a1a1a] bg-white px-8 py-4 text-base font-medium text-[#1a1a1a] transition-all hover:bg-gray-100 hover:scale-[1.02]"
+              >
+                Cost vs Local Hiring
                 <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
                   <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -113,5 +120,7 @@ export function HeroSection() {
         </motion.div>
       </motion.div>
     </section>
+    <HiringCalculatorModal isOpen={calculatorOpen} onClose={() => setCalculatorOpen(false)} />
+    </>
   );
 }

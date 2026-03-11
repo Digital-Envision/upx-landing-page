@@ -81,7 +81,7 @@ export function CTASection() {
         animate={isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.3 }}
       >
-        <h2 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl">
+        <h2 className="md:whitespace-nowrap text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl">
           Ready to add a senior pod
         </h2>
         <h2 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-5xl md:text-6xl">
@@ -91,15 +91,15 @@ export function CTASection() {
           Book a short technical call. We&apos;ll confirm fit, map the first 2 weeks, and show you exactly how we&apos;ll integrate.
         </p>
         <div className="mt-10">
-          <a
-            href="https://calendar.google.com"
+          <button
+            onClick={() => window.open("https://links.cornerstoneandcompass.com/widget/bookings/turbo-team", "_blank")}
             className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-8 py-4 text-base font-medium text-white transition-all hover:bg-black hover:shadow-xl hover:scale-[1.02]"
           >
             Book a 15-minute Technical Fit Call
             <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
               <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </button>
         </div>
       </motion.div>
     </section>

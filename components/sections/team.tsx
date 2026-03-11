@@ -9,25 +9,25 @@ const teamMembers = [
   {
     name: "Adi",
     role: "Technical Lead / PM",
-    bio: "Seasoned technology leader with 15+ years of experience building and scaling engineering teams, architecting complex systems, and delivering innovative products across multiple domains.",
+    bio: "Seasoned technology leader with 10+ years of experience building and scaling engineering teams, architecting complex systems, and delivering innovative products across multiple domains.",
     avatar: "/illustrations/team-male-1.webp",
   },
   {
     name: "Putri",
     role: "Senior Fullstack Engineer",
-    bio: "Senior fullstack developer with 10+ years of experience building scalable systems end-to-end, skilled in Node.js, React, TypeScript, PostgreSQL, and AWS infrastructure.",
+    bio: "Senior fullstack developer with 7+ years of experience building scalable systems end-to-end, skilled in Node.js, React, TypeScript, PostgreSQL, and AWS infrastructure.",
     avatar: "/illustrations/team-female.webp",
   },
   {
     name: "Rizky",
     role: "Senior Frontend Engineer",
-    bio: "Frontend developer with 10+ years' experience in JavaScript, TypeScript, React, Next.js, and Vue — passionate about solving complex UI problems and delivering pixel-perfect interfaces.",
+    bio: "Frontend developer with 8+ years' experience in JavaScript, TypeScript, React, Next.js, and Vue — passionate about solving complex UI problems and delivering pixel-perfect interfaces.",
     avatar: "/illustrations/team-male-1.webp",
   },
   {
     name: "Sari",
     role: "Senior Backend Engineer",
-    bio: "Senior backend engineer with 10+ years' experience specialising in backend development, proficient in Node.js, Python, Java, and databases, with strong skills in system design and QA.",
+    bio: "Senior backend engineer with 7+ years' experience specialising in backend development, proficient in Node.js, Python, Java, and databases, with strong skills in system design and QA.",
     avatar: "/illustrations/team-female.webp",
   },
 ];
@@ -46,7 +46,7 @@ export function TeamSection() {
               What one of our elite teams look like
             </h1>
             <p className="mt-4 text-lg text-[#555]">
-              Every member is a senior engineer with 10+ years&apos; experience
+              Every member is a senior engineer with 7+ years&apos; experience
             </p>
           </div>
         </AnimateOnScroll>

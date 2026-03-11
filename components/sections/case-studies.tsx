@@ -7,27 +7,40 @@ import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 
 const caseStudies = [
   {
-    company: "FinTrack",
-    industry: "Fintech",
-    logo: "/illustrations/case-study-logo-fintech.png",
-    description:
-      "Australian payment automation platform that lets businesses pay any supplier by credit card, streamlining bills and earning rewards.",
+    company: "Sophiie.ai",
+    industry: "Voice AI",
+    logo: "/illustrations/logo-sophiie.webp",
+    demo: "/illustrations/demo-sophiie.webp",
+    description: () => (
+      <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#555] md:text-xl">
+        <p>AI virtual receptionist that answers calls instantly, books appointments, and handles enquiries 24/7 — built for service-based businesses.</p>
+        <p>Sophiie raised <strong>$1.2M</strong> within 12 months, and an additional <strong>$2M</strong> just 6 months later.</p>
+      </div>
+    ),
     cardBg: "bg-[#FFF8F0]",
   },
   {
     company: "EduPlatform",
     industry: "Edtech",
     logo: "/illustrations/case-study-logo-edtech.png",
-    description:
-      "Education platform for secondary schools, providing interactive revision tools and resources to over 500,000 students and teachers.",
+    demo: "/illustrations/demo-sophiie.webp",
+    description: () => (
+      <div className="mt-6 text-lg leading-relaxed text-[#555] md:text-xl">
+        <p>Education platform for secondary schools, providing interactive revision tools and resources to over 500,000 students and teachers.</p>
+      </div>
+    ),
     cardBg: "bg-[#F0F4FF]",
   },
   {
     company: "ShopLocal",
     industry: "Marketplace",
     logo: "/illustrations/case-study-logo-marketplace.png",
-    description:
-      "Australian restaurant-tech platform using dynamic pricing to fill empty tables, serving 2M+ users across 3,000+ venues.",
+    demo: "/illustrations/demo-sophiie.webp",
+    description: () => (
+      <div className="mt-6 text-lg leading-relaxed text-[#555] md:text-xl">
+        <p>Australian restaurant-tech platform using dynamic pricing to fill empty tables, serving 2M+ users across 3,000+ venues.</p>
+      </div>
+    ),
     cardBg: "bg-[#FEF2F8]",
   },
 ];
@@ -63,13 +76,13 @@ function StackingCard({
       >
         <div className="flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
           {/* Monitor mockup — bigger */}
-          <div className="flex shrink-0 justify-center md:w-[45%]">
+          <div className="flex shrink-0 justify-center md:w-[55%]">
             <Image
-              src="/illustrations/case-study-monitor.webp"
+              src={study.demo}
               alt={`${study.company} application dashboard`}
-              width={800}
-              height={800}
-              className="w-full max-w-[400px] drop-shadow-lg"
+              width={1200}
+              height={1200}
+              className="w-full max-w-[600px] drop-shadow-lg"
             />
           </div>
 
@@ -78,13 +91,16 @@ function StackingCard({
             <span className="inline-block rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-[#1a1a1a]">
               {study.industry}
             </span>
-            {/* Company logo placeholder */}
-            <div className="mt-4 flex h-10 w-36 items-center justify-center rounded-md bg-gray-200/60 text-xs text-gray-400">
-              {study.company} logo
+            <div className="mt-4">
+              <Image
+                src={study.logo}
+                alt={`${study.company} logo`}
+                width={160}
+                height={40}
+                className="h-10 w-auto object-contain"
+              />
             </div>
-            <p className="mt-6 text-lg leading-relaxed text-[#555] md:text-xl">
-              {study.description}
-            </p>
+            {study.description()}
           </div>
         </div>
       </motion.div>
