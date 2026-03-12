@@ -7,28 +7,28 @@ import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 
 const teamMembers = [
   {
-    name: "Adi",
-    role: "Technical Lead / PM",
-    bio: "Seasoned technology leader with 10+ years of experience building and scaling engineering teams, architecting complex systems, and delivering innovative products across multiple domains.",
-    avatar: "/illustrations/team-male-1.webp",
+    name: "Ari",
+    role: "Lead Engineer",
+    bio: "Seasoned leader with 10+ years of experience building and scaling engineering teams, architecting complex systems, and delivering innovative products across multiple domains.",
+    avatar: "/illustrations/avatar_1.webp",
   },
   {
-    name: "Putri",
+    name: "Febryan",
     role: "Senior Fullstack Engineer",
     bio: "Senior fullstack developer with 7+ years of experience building scalable systems end-to-end, skilled in Node.js, React, TypeScript, PostgreSQL, and AWS infrastructure.",
-    avatar: "/illustrations/team-female.webp",
+    avatar: "/illustrations/avatar_2.webp",
   },
   {
-    name: "Rizky",
+    name: "Rifky",
     role: "Senior Frontend Engineer",
     bio: "Frontend developer with 8+ years' experience in JavaScript, TypeScript, React, Next.js, and Vue — passionate about solving complex UI problems and delivering pixel-perfect interfaces.",
-    avatar: "/illustrations/team-male-1.webp",
+    avatar: "/illustrations/avatar_3.webp",
   },
   {
-    name: "Sari",
-    role: "Senior Backend Engineer",
-    bio: "Senior backend engineer with 7+ years' experience specialising in backend development, proficient in Node.js, Python, Java, and databases, with strong skills in system design and QA.",
-    avatar: "/illustrations/team-female.webp",
+    name: "Ang",
+    role: "Senior Mobile Engineer",
+    bio: "Senior mobile engineer with 7+ years' experience specialising in mobile development, proficient in React Native, Flutter, Kotlin, and modern mobile architectures.",
+    avatar: "/illustrations/avatar_4.webp",
   },
 ];
 
@@ -38,7 +38,7 @@ export function TeamSection() {
 
   return (
     <section className="bg-[#FAFBFF] py-16 md:py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto px-6 lg:px-8">
         {/* Section header */}
         <AnimateOnScroll>
           <div className="mb-16 text-center">
@@ -52,10 +52,11 @@ export function TeamSection() {
         </AnimateOnScroll>
 
         {/* Team grid */}
-        <div ref={ref} className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div ref={ref} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {teamMembers.map((member, index) => (
             <motion.div
               key={member.name}
+              className="h-full"
               initial={{ y: 60, opacity: 0, scale: 0.95 }}
               animate={isInView ? { y: 0, opacity: 1, scale: 1 } : { y: 60, opacity: 0, scale: 0.95 }}
               transition={{
@@ -65,10 +66,10 @@ export function TeamSection() {
                 delay: 0.1 + index * 0.1,
               }}
             >
-              <div className="group overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 text-center transition-all duration-300 hover:border-[#2248F3]/20 hover:shadow-lg hover:-translate-y-1">
+              <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 text-center transition-all duration-300 hover:border-[#2248F3]/20 hover:shadow-lg hover:-translate-y-1">
                 {/* Avatar */}
                 <div className="mb-6 flex justify-center">
-                  <div className="h-48 w-48 overflow-hidden rounded-2xl bg-[#F5F5F5] transition-transform duration-300 group-hover:scale-105">
+                  <div className="h-48 w-48 overflow-hidden rounded-2xl transition-transform duration-300 group-hover:scale-105">
                     <Image
                       src={member.avatar}
                       alt={`${member.name} - ${member.role}`}
@@ -86,7 +87,7 @@ export function TeamSection() {
                 <p className="mt-1 text-sm font-medium text-[#2248F3]">
                   {member.role}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-[#555]">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-[#555]">
                   {member.bio}
                 </p>
               </div>
