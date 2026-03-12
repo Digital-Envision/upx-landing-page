@@ -59,18 +59,18 @@ function StackingCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: cardRef,
-    offset: ["start end", "start start"],
+    offset: ["start end", "start 20%"],
   });
 
   // Each card scales down slightly as it "settles" into the stack
   const scale = useTransform(scrollYProgress, [0, 1], [0.92, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0.4, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [0.4, 1]);
 
   return (
     <div
       ref={cardRef}
       className="sticky"
-      style={{ top: `${120 + index * 24}px`, zIndex: index }}
+      style={{ top: `calc(2rem + ${index * 16}px)`, zIndex: index }}
     >
       <motion.div
         style={{ scale, opacity }}
@@ -113,11 +113,11 @@ function StackingCard({
 
 export function CaseStudiesSection() {
   return (
-    <section id="case-studies" className="bg-white py-24 md:py-32">
+    <section id="case-studies" className="bg-white py-12 sm:py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section header */}
         <AnimateOnScroll>
-          <div className="mb-16 text-center">
+          <div className="mb-8 text-center sm:mb-16">
             <h1 className="text-3xl font-bold tracking-tight text-[#1a1a1a] sm:text-4xl md:text-5xl">
               Trusted by fast-growing companies worldwide
             </h1>
