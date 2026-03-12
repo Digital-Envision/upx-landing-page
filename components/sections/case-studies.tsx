@@ -12,7 +12,7 @@ const caseStudies = [
     logo: "/illustrations/logo-sophiie.webp",
     demo: "/illustrations/demo-sophiie.webp",
     description: () => (
-      <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#555] md:text-xl">
+      <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#555] sm:mt-6 sm:space-y-4 sm:text-lg md:text-xl">
         <p>AI virtual receptionist that answers calls instantly, books appointments, and handles enquiries 24/7 — built for service-based businesses.</p>
         <p>Sophiie raised <strong>$1.2M</strong> within 12 months, and an additional <strong>$2M</strong> just 6 months later.</p>
       </div>
@@ -25,7 +25,7 @@ const caseStudies = [
     logo: "/illustrations/logo-erin.webp",
     demo: "/illustrations/demo-erin.webp",
     description: () => (
-      <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#555] md:text-xl">
+      <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#555] sm:mt-6 sm:space-y-4 sm:text-lg md:text-xl">
         <p>Resident management super app for modern residential communities — connecting residents, property managers, and developers through a single platform for amenities, security, and community services.</p>
         <p>Erin raised <strong>$4M</strong> with Origin Energy after 3 years working with us. They now have a team of <strong>7</strong> and we are on track to grow the team further.</p>
       </div>
@@ -38,7 +38,7 @@ const caseStudies = [
     logo: "/illustrations/logo-enpnt.webp",
     demo: "/illustrations/demo-enpnt.webp",
     description: () => (
-      <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#555] md:text-xl">
+      <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#555] sm:mt-6 sm:space-y-4 sm:text-lg md:text-xl">
         <p>Australia&apos;s largest dance directory — connecting dancers with studios nationwide and providing dance schools with management software to run their business efficiently.</p>
         <p>ENPNT raised <strong>$2M</strong> only after 1 year working with us, and are on track to penetrate the US market with the Upscalix team powering the platform.</p>
       </div>
@@ -74,12 +74,12 @@ function StackingCard({
     >
       <motion.div
         style={{ scale, opacity }}
-        className={`overflow-hidden rounded-3xl ${study.cardBg} p-10 shadow-sm transition-shadow duration-300 hover:shadow-lg md:p-14`}
+        className={`overflow-hidden rounded-3xl ${study.cardBg} p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg sm:p-10 md:p-14`}
       >
-        <div className="flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
+        <div className="flex flex-col gap-6 sm:gap-10 md:flex-row md:items-center md:gap-16">
           {/* Monitor mockup — bigger */}
           <div className="flex shrink-0 items-center justify-center md:w-[55%]">
-            <div className="relative h-[320px] w-full max-w-[600px] md:h-[400px]">
+            <div className="relative h-[200px] w-full max-w-[600px] sm:h-[320px] md:h-[400px]">
               <Image
                 src={study.demo}
                 alt={`${study.company} application dashboard`}
