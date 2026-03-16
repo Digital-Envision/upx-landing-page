@@ -14,7 +14,7 @@ const caseStudies = [
     description: () => (
       <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#555] sm:mt-6 sm:space-y-4 sm:text-lg md:text-xl">
         <p>AI virtual receptionist that answers calls instantly, books appointments, and handles enquiries 24/7 — built for service-based businesses.</p>
-        <p>Sophiie raised <strong>$1.2M</strong> within 12 months, and an additional <strong>$2M</strong> just 6 months later.</p>
+        <p>Sophiie raised <strong>$1.8M</strong> within 12 months, and an additional <strong>$3.2M</strong> just 6 months later.</p>
       </div>
     ),
     cardBg: "bg-[#FFF8F0]",
