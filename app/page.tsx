@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { HeroSection } from "@/components/sections/hero";
 import { PainPointsSection } from "@/components/sections/pain-points";
+import { VideoShowcaseSection } from "@/components/sections/video-showcase";
 import { UniqueOpportunitySection } from "@/components/sections/unique-opportunity";
 import { CountryMapSection } from "@/components/sections/country-map";
 import { TeamSection } from "@/components/sections/team";
@@ -33,7 +34,9 @@ export default function Home() {
         <HeroSection />
         {/* 2. Problem Agitation */}
         <PainPointsSection />
-        {/* 3. Unique Mechanism */}
+        {/* 3. Video showcase */}
+        <VideoShowcaseSection />
+        {/* 4. Unique Mechanism */}
         <UniqueOpportunitySection />
         {/* 4. Team location & proof */}
         <CountryMapSection />
