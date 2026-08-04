@@ -38,6 +38,19 @@
   --section-warm: #fff8f0;
   --section-rose: #fef2f8;
 
+  /* Service landing pages (Figma "Upscalix Landing Pages") — a self-contained
+     palette so these routes can match the design without shifting the homepage. */
+  --lp-blue: #3e64ff;
+  --lp-blue-deep: #2248f3;
+  --lp-cyan: #5edfff;
+  --lp-navy: #0e1e39;
+  --lp-slate: #425073;
+  --lp-mist: #f5f7ff;
+  --lp-line: #e5e7eb;
+  --lp-chip: #e7eaff;
+  --lp-navy-muted: #aeb8da;
+  --lp-navy-body: #c9d3f0;
+
   /* Radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -111,9 +124,20 @@
   --color-section-warm: var(--section-warm);
   --color-section-rose: var(--section-rose);
 
+  --color-lp-blue: var(--lp-blue);
+  --color-lp-blue-deep: var(--lp-blue-deep);
+  --color-lp-cyan: var(--lp-cyan);
+  --color-lp-navy: var(--lp-navy);
+  --color-lp-slate: var(--lp-slate);
+  --color-lp-mist: var(--lp-mist);
+  --color-lp-line: var(--lp-line);
+  --color-lp-chip: var(--lp-chip);
+  --color-lp-navy-muted: var(--lp-navy-muted);
+  --color-lp-navy-body: var(--lp-navy-body);
+
   /* Typography */
   --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
+  --font-poppins: var(--font-poppins-family);
 
   /* Animations */
   --animate-marquee: marquee 40s linear infinite;
