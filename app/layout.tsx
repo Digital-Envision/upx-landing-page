@@ -1,17 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
 import ClarityProvider from "@/components/clarity-provider";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Typefaces are declared per route group — see app/(marketing)/layout.tsx and
+// app/(landing)/layout.tsx — so each route only preloads the font it renders in.
 
 export const metadata: Metadata = {
   title: "Upscalix – Your Dedicated Dev Team in Indonesia",
@@ -101,9 +93,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: structuredData }}
         />
       </head>
-      <body
-        className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}
-      >
+      <body className="antialiased">
         <ClarityProvider />
         {children}
       </body>
