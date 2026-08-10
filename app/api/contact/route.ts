@@ -87,5 +87,9 @@ export async function POST(request: Request) {
     console.warn(`[contact] lead ${lead.id} accepted but every destination is disabled`);
   }
 
-  return NextResponse.json({ ok: true });
+  // `tracked` tells the client this was a real, accepted enquiry so it can fire
+  // the `generate_lead` conversion. The honeypot path above deliberately omits
+  // it while still returning a 200, so bots see no failure signal but never
+  // inflate the conversion count.
+  return NextResponse.json({ ok: true, tracked: true });
 }

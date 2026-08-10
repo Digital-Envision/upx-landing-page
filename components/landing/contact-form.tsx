@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackGenerateLead } from "@/lib/analytics";
 import type { LandingPageContent } from "@/lib/landing/content";
 import { MessageIcon, PaperIcon, ProfileIcon, WorkIcon } from "./figma-icons";
 import { CtaButton } from "./ui";
@@ -72,9 +73,15 @@ export function ContactForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, source: slug }),
       });
+      const body = (await res.json().catch(() => null)) as
+        | { error?: string; tracked?: boolean }
+        | null;
       if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(body?.error ?? "Something went wrong. Please try again.");
+      }
+      // Only genuine enquiries carry `tracked` — see app/api/contact/route.ts.
+      if (body?.tracked) {
+        trackGenerateLead(slug);
       }
       form.reset();
       setStatus("sent");
