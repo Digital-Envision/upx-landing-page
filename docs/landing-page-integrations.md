@@ -253,30 +253,28 @@ field consistently arrives blank, check the server log for the
 
 ## 3. Pulse CRM (Virtual-Office)
 
-`syncLeadToPulse()` uses the same HMAC-signed public-endpoint pattern as
-`vafe-landing`'s `syncToPulse()`: the JSON body is signed with
-`HMAC-SHA256(PULSE_SYNC_SECRET)` and sent as the `X-Pulse-Signature` header.
+`syncLeadToPulse()` posts to `POST /public/leads` on the Pulse backend. The JSON
+body is signed with `HMAC-SHA256(PULSE_SYNC_SECRET)` and sent as the
+`X-Pulse-Signature` header — the same scheme `vafe-landing` uses for its
+checkout sync, and the only authentication on the route.
 
-**This endpoint does not exist yet.** Pulse currently only exposes
-`POST /public/stripe/purchase`, which is purchase-shaped: it requires a Stripe
-session id, writes to `deals.stripe_session_id`, and stamps
-`DealSource.VAFE_LANDING_PAGE`. Reusing it for a marketing lead would put the
-wrong source on the deal and occupy the Stripe id column.
+Pulse creates a **Contact**, an optional **Company**, and an **unassigned Deal
+in the `New` stage** stamped `DealSource.UPSCALIX_LANDING_PAGE`. The deal is
+left unowned deliberately: it stays visibly up-for-grabs in the New column, and
+the team already gets the notification email above on every submission.
 
-### What needs to be added to `Virtual-Office/backend`
+The pipeline is chosen from the page the enquiry came from:
 
-Model it on `src/stripe-sync/`:
+| Landing page | Pulse pipeline | Deal name |
+|---|---|---|
+| `it-outsourcing` | Staff | `[JN] IT Outsourcing` |
+| `offshore-developers` | Staff | `[JN] Offshore Developers` |
+| `custom-software-development` | Project | `[JN] Custom Software Development` |
 
-1. **Migration** — add `upscalix_landing_page` to the `deals.deal_source` enum
-   (see `1789000000000-AddStripeSyncToDeals.ts` for the runtime enum-name
-   lookup that handles the two naming conventions in the wild), and add a
-   nullable, uniquely-indexed `deals.lead_id` column for idempotency.
-2. **Controller** — `POST /public/leads`, reusing `verifyPulseSignature()`
-   from `src/stripe-sync/pulse-signature.ts` against the raw body.
-3. **Service** — dedupe on `leadId`; `contactsService.upsertByEmail()`,
-   `companiesService.upsertByName()` when a company name is present, then
-   `dealsService.create()` with `pipelineName: 'Project'` and
-   `stageName: 'New'`.
+`leadId` is the idempotency key. Pulse stores it on `deals.external_lead_id`
+behind a partial unique index, so a retry — or a visitor double-clicking submit
+— resolves to the original deal and responds `{"processed": false}` instead of
+creating a duplicate.
 
 The payload this app sends:
 
@@ -286,15 +284,17 @@ The payload this app sends:
   "firstName": "Jamie",
   "lastName": "Nguyen",
   "email": "jamie@example.com.au",
-  "phone": "",
   "companyName": "Riverbend Logistics",
-  "source": "upscalix_landing_page",
-  "pageName": "Offshore Developers",
+  "source": "it-outsourcing",
   "notes": "Roles required: …\n\n<project details>"
 }
 ```
 
-Then set, using the same secret value as the Pulse backend:
+`source` is the page **slug**, not a display name — Pulse maps it to a pipeline
+and rejects anything outside the three above. `notes` lands in the deal's
+description.
+
+To switch it on, set these to the same values as the Pulse backend:
 
 ```bash
 PULSE_SYNC_ENABLED=true
@@ -302,8 +302,19 @@ PULSE_SYNC_URL=https://pulse.your-domain
 PULSE_SYNC_SECRET=<shared secret>
 ```
 
-If the endpoint's final shape differs, only the `payload` object and the path
-in `lib/landing/pulse.ts` need changing.
+`PULSE_SYNC_URL` is the backend origin — `/public/leads` is appended.
+
+### The Pulse side
+
+Implemented in `Virtual-Office/backend/src/public-leads/`. If you change the
+wire format, both ends must move together: `CreatePublicLeadDto` validates it,
+and `src/public-leads/contract.spec.ts` verifies real captured payloads from
+this app against that DTO and the signature check. Regenerate the fixture with
+`scratchpad/pulsetest/capture.mjs` if the payload changes.
+
+Adding a fourth landing page means adding its slug to `UPSCALIX_LEAD_PAGES` in
+the DTO and to `LEAD_PAGE_ROUTING` in `public-lead.service.ts`, or Pulse will
+reject it with a 400.
 
 ---
 

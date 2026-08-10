@@ -1,19 +1,19 @@
 import crypto from "node:crypto";
 import type { DeliveryResult, Lead } from "./lead";
-import { pageLabel, splitName } from "./lead";
+import { splitName } from "./lead";
 
 /**
- * Pushes a landing-page enquiry into Pulse (the Virtual-Office CRM) as a Deal,
- * using the same HMAC-signed public-endpoint pattern as vafe-landing's
- * syncToPulse().
+ * Pushes a landing-page enquiry into Pulse (the Virtual-Office CRM) as a lead —
+ * a Contact, an optional Company, and an unassigned Deal in the New stage.
  *
- * NOTE: Pulse currently exposes `POST /public/stripe/purchase`, which is
- * purchase-shaped (it requires a Stripe session id and stamps
- * DealSource.VAFE_LANDING_PAGE). This posts to `POST /public/leads` instead —
- * an endpoint that still needs to be added on the Pulse side. Until it exists,
- * leave PULSE_SYNC_ENABLED=false; the email and spreadsheet paths work on their
- * own. The required backend change is written up in
- * docs/landing-page-integrations.md.
+ * Posts to `POST /public/leads`, authenticated by an HMAC-SHA256 of the exact
+ * request body under PULSE_SYNC_SECRET, the same scheme vafe-landing uses for
+ * its checkout sync. `leadId` is the idempotency key: Pulse stores it on the
+ * deal behind a unique index, so a retry resolves to the original deal rather
+ * than creating a duplicate.
+ *
+ * Pulse picks the pipeline from `source` — the two staffing pages route to
+ * Staff, custom software to Project.
  *
  * Env-gated and never throws.
  */
@@ -35,10 +35,9 @@ export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
     firstName,
     lastName,
     email: lead.email,
-    phone: "",
     companyName: lead.company,
-    source: "upscalix_landing_page",
-    pageName: pageLabel(lead.source),
+    // The page slug, not a display name — Pulse maps it to a pipeline.
+    source: lead.source,
     notes: [lead.roles ? `Roles required: ${lead.roles}` : "", lead.details]
       .filter(Boolean)
       .join("\n\n"),
