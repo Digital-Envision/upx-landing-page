@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import ClarityProvider from "@/components/clarity-provider";
+import { GTM_ID } from "@/lib/analytics";
 import "./globals.css";
 
 // Typefaces are declared per route group — see app/(marketing)/layout.tsx and
@@ -87,6 +89,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* GTM lives in the root layout so both route groups — the marketing
+          homepage and the service landing pages — are covered by one container. */}
+      {GTM_ID ? <GoogleTagManager gtmId={GTM_ID} /> : null}
       <head>
         <script
           type="application/ld+json"
