@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trackGenerateLead } from "@/lib/analytics";
+import { trackLeadSubmitted } from "@/lib/analytics";
 import type { LandingPageContent } from "@/lib/landing/content";
 import { MessageIcon, PaperIcon, ProfileIcon, WorkIcon } from "./figma-icons";
 import { CtaButton } from "./ui";
@@ -81,7 +81,7 @@ export function ContactForm({
       }
       // Only genuine enquiries carry `tracked` — see app/api/contact/route.ts.
       if (body?.tracked) {
-        trackGenerateLead(slug);
+        trackLeadSubmitted(slug);
       }
       form.reset();
       setStatus("sent");
