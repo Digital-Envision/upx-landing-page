@@ -40,13 +40,13 @@ export function ClientLogos() {
               loading="eager"
               // The strip's artwork runs flush to both edges, so each copy
               // carries its own trailing gap — otherwise the last logo butts
-              // straight into the first at the loop seam. 57px reproduces the
-              // strip's own 171px inter-logo spacing at this 1440px render
+              // straight into the first at the loop seam. 53px reproduces the
+              // strip's own 160px inter-logo spacing at this 1440px render
               // (the source is 4320px wide), so the seam is indistinguishable
               // from every other gap. Keeping it *inside* the copy means the
               // track stays exactly two equal units wide, so the -50% keyframe
               // remains seamless.
-              className="mr-[57px] h-10 w-[1440px] max-w-none object-contain"
+              className="mr-[53px] h-10 w-[1440px] max-w-none object-contain"
             />
           ))}
         </div>
