@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import { AkarIconsChevronRightSmallIcon } from "./icons";
 
 /**
  * Shared primitives for the service landing pages. The Figma design is a
@@ -174,5 +175,47 @@ export function IconMedallion({
     >
       <Icon width={size / 2} height={size / 2} className="text-lp-blue" strokeWidth={1.5} />
     </span>
+  );
+}
+
+/**
+ * The outlined "Learn more" pill the frames put on the case-study card and on
+ * every project card. Same shape in both places; only the ink changes, because
+ * one sits on the navy panel and the others on white.
+ */
+export function LearnMoreButton({
+  href,
+  tone = "blue",
+  label,
+  className,
+}: {
+  href: string;
+  tone?: "blue" | "white";
+  /** Names the destination for screen readers, which read links out of context. */
+  label: string;
+  className?: string;
+}) {
+  // These now point at write-ups on the main marketing site. Opening them in a
+  // new tab keeps the landing page — and the enquiry form on it — behind the
+  // click, which matters when the traffic is paid.
+  const external = /^https?:\/\//.test(href);
+
+  return (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      aria-label={`Learn more about ${label}${external ? " (opens in a new tab)" : ""}`}
+      className={clsx(
+        "inline-flex items-center gap-2 rounded-[10px] border px-3 py-2 text-[16px] transition-colors",
+        "focus-visible:outline-2 focus-visible:outline-offset-2",
+        tone === "white"
+          ? "border-white text-white hover:bg-white/10 focus-visible:outline-white"
+          : "border-lp-blue text-lp-blue hover:bg-lp-blue/[0.06] focus-visible:outline-lp-blue",
+        className
+      )}
+    >
+      Learn more
+      <AkarIconsChevronRightSmallIcon width={20} height={20} className="shrink-0" />
+    </a>
   );
 }

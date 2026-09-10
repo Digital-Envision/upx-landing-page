@@ -1,6 +1,14 @@
 import Image from "next/image";
 import { clsx } from "clsx";
-import type { LandingPageContent, ModelCard, TileCard } from "@/lib/landing/content";
+import type {
+  ChallengeContent,
+  ExpertiseContent,
+  LandingPageContent,
+  ModelCard,
+  RolesContent,
+  SolutionContent,
+  TileCard,
+} from "@/lib/landing/content";
 import { TRUSTED_BY } from "@/lib/landing/content";
 import { CtaButton, IconMedallion, LpContainer, SectionHeading } from "./ui";
 
@@ -57,7 +65,7 @@ export function ClientLogos() {
 
 /* -------------------------------------------------------------- challenge */
 
-export function ChallengeSection({ content }: { content: LandingPageContent["challenge"] }) {
+export function ChallengeSection({ content }: { content: ChallengeContent }) {
   return (
     <section className="bg-lp-mist py-16 md:py-[80px]">
       <LpContainer className="grid items-center gap-12 lg:grid-cols-2 lg:gap-12">
@@ -113,7 +121,7 @@ export function CtaBand({
 
 /* --------------------------------------------------------------- solution */
 
-export function SolutionSection({ content }: { content: LandingPageContent["solution"] }) {
+export function SolutionSection({ content }: { content: SolutionContent }) {
   return (
     <section id="solution" className="bg-lp-mist pb-14 pt-16 md:pb-[56px] md:pt-[80px]">
       <LpContainer>
@@ -215,7 +223,7 @@ function TileCards({ items, columns }: { items: TileCard[]; columns: 3 | 4 }) {
           className="flex flex-col items-center rounded-lg bg-white px-6 py-[30px] text-center"
         >
           <IconMedallion icon={tile.icon} />
-          <h3 className="pt-6 text-[20px] font-bold leading-[24.8px] text-lp-navy">
+          <h3 className="whitespace-pre-line pt-6 text-[20px] font-bold leading-[24.8px] text-lp-navy">
             {tile.title}
           </h3>
         </article>
@@ -338,6 +346,72 @@ export function ProcessSection({ content }: { content: LandingPageContent["proce
             </li>
           ))}
         </ol>
+      </LpContainer>
+    </section>
+  );
+}
+
+/**
+ * Page 4's tech wall. The frame keeps the heading, the logo grid and the
+ * "Roles we support" row inside one #f4f6ff block, so they render together
+ * rather than as two sections. The closing note fills the grid's last two
+ * cells instead of sitting under it.
+ */
+export function ExpertiseSection({
+  content,
+  roles,
+}: {
+  content: ExpertiseContent;
+  roles?: RolesContent;
+}) {
+  return (
+    <section className="bg-[#f4f6ff] py-16 md:py-[80px]">
+      <LpContainer className="flex flex-col items-center gap-12 md:gap-[56px]">
+        <h2 className="text-center text-[clamp(1.75rem,4.2vw,2.5rem)] font-bold leading-[1.2] text-balance text-lp-navy">
+          {content.heading}
+        </h2>
+
+        <ul className="grid w-full grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
+          {content.logos.map((logo) => (
+            <li
+              key={logo.alt}
+              className="flex min-h-[105px] items-center justify-center rounded-2xl bg-white p-2.5"
+            >
+              <Image
+                src={logo.src}
+                alt={logo.alt}
+                width={logo.width}
+                height={logo.height}
+                loading="lazy"
+                sizes="(min-width: 640px) 160px, 45vw"
+                className="h-16 w-auto max-w-[85%] object-contain"
+              />
+            </li>
+          ))}
+          <li className="col-span-2 flex items-center justify-center p-2 text-center text-[18px] font-medium leading-[28px] text-lp-navy sm:text-[20px]">
+            {content.note}
+          </li>
+        </ul>
+
+        {roles ? (
+          <div className="flex flex-col items-center gap-6">
+            <h3 className="text-center text-[26px] font-bold leading-[1.2] text-lp-navy sm:text-[32px]">
+              {roles.heading}
+            </h3>
+            <ul className="flex flex-wrap justify-center gap-6">
+              {roles.items.map((role) => (
+                <li
+                  key={role}
+                  className="flex min-h-[156px] w-[220px] items-center justify-center rounded-3xl bg-white p-6 shadow-[0px_20px_30px_0px_#dbdff3]"
+                >
+                  <p className="text-center text-[22px] font-semibold leading-[28.8px] text-lp-navy sm:text-[24px]">
+                    {role}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </LpContainer>
     </section>
   );

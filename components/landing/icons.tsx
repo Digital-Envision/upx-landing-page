@@ -250,6 +250,24 @@ export function HugeiconsApiGatewayIcon(props: IconProps) {
   );
 }
 
+/** hugeicons:apple */
+export function HugeiconsAppleIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/>
+    </svg>
+  );
+}
+
+/** hugeicons:android */
+export function HugeiconsAndroidIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6.5 9.5a5.5 5.5 0 1 1 11 0V16c0 1.414 0 2.121-.44 2.56c-.439.44-1.146.44-2.56.44h-5c-1.414 0-2.121 0-2.56-.44c-.44-.439-.44-1.146-.44-2.56z"/><path strokeLinecap="round" strokeLinejoin="round" d="M20 11v6m-5 2v3m-6-3v3M4 11v6m6-13L8.5 2M14 4l1.5-2m-9 8h11"/></g>
+    </svg>
+  );
+}
+
 /** hugeicons:refresh-04 */
 export function HugeiconsRefresh04Icon(props: IconProps) {
   return (
@@ -273,6 +291,24 @@ export function HugeiconsPiggyBankIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
       <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"><path d="M14.5 5.5h-4A6.5 6.5 0 0 0 7 17.478l.288 1.738c.07.423.105.635.202.798a1 1 0 0 0 .49.416c.178.07.392.07.822.07c.397 0 .596 0 .764-.062a1 1 0 0 0 .479-.374c.1-.148.15-.34.246-.727l.209-.837h3l.21.837c.096.386.144.58.245.727a1 1 0 0 0 .479.374c.168.062.367.062.764.062c.43 0 .644 0 .821-.07a1 1 0 0 0 .49-.416c.098-.163.133-.375.203-.798L17 17.478a6.5 6.5 0 0 0 2.502-2.978l.89-.178c.77-.154 1.155-.231 1.381-.508c.227-.276.227-.669.227-1.453v-.3c0-.75 0-1.124-.212-1.396c-.212-.27-.575-.362-1.303-.544L20 10c0-1.5-1.167-2.833-2-3.5v-3h-.264c-1.37 0-2.623.774-3.236 2"/><path d="M15.875 9.75h-.125m.25 0a.25.25 0 1 1-.5 0a.25.25 0 0 1 .5 0M2 8v2a2 2 0 0 0 2 2"/></g>
+    </svg>
+  );
+}
+
+/** mage:phone-call-fill */
+export function MagePhoneCallFillIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path fill="currentColor" d="M21.33 19.035a2.57 2.57 0 0 1-.884 1.432a5.25 5.25 0 0 1-3.738 1.564h-.325a11 11 0 0 1-4.205-1.087h-.01c-.305-.142-.62-.284-.925-.457a19 19 0 0 1-4.185-3.18a18.2 18.2 0 0 1-3.9-5.292A11.7 11.7 0 0 1 2.14 8.572a6.4 6.4 0 0 1 .407-3.708a6.8 6.8 0 0 1 1.148-1.432A2.2 2.2 0 0 1 5.29 2.69a2.5 2.5 0 0 1 1.687.935c.457.497 1.015 1.015 1.473 1.493l.63.62c.37.328.599.786.64 1.28c0 .453-.167.89-.468 1.229a9 9 0 0 1-.62.68l-.203.213c-.118.11-.208.246-.264.397q-.075.223-.06.457c.161.431.414.823.74 1.148c.509.69 1.017 1.29 1.535 1.94a12.9 12.9 0 0 0 3.29 2.733c.127.093.273.155.428.182c.134.01.27-.01.396-.06c.355-.209.67-.477.934-.793a2.17 2.17 0 0 1 1.422-.782a2.03 2.03 0 0 1 1.423.61c.203.172.426.406.64.63l.304.314l.315.305l.539.548q.482.428.904.915c.282.39.409.872.355 1.35m-3.646-6.958a.77.77 0 0 1-.762-.762a4.37 4.37 0 0 0-4.378-4.378a.762.762 0 0 1 0-1.524a5.893 5.893 0 0 1 5.902 5.902a.76.76 0 0 1-.762.762"/><path fill="currentColor" d="M21.209 11.72a.77.77 0 0 1-.762-.761a7.455 7.455 0 0 0-7.456-7.467a.762.762 0 1 1 0-1.523a8.98 8.98 0 0 1 8.98 8.99a.76.76 0 0 1-.762.762"/>
+    </svg>
+  );
+}
+
+/** akar-icons:chevron-right-small */
+export function AkarIconsChevronRightSmallIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 6l6 6l-6 6"/>
     </svg>
   );
 }

@@ -38,6 +38,9 @@ export async function POST(request: Request) {
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ error: "Please enter a valid business email." }, { status: 400 });
   }
+  // `phone` is marked required in the form and enforced by the browser, but is
+  // deliberately not validated here: a name and a working email are enough to
+  // follow up on, and rejecting the request would throw the enquiry away.
   if (!Object.hasOwn(LANDING_PAGES, source)) {
     return NextResponse.json({ error: "Unknown form source." }, { status: 400 });
   }
@@ -47,6 +50,7 @@ export async function POST(request: Request) {
     source,
     fullName,
     email,
+    phone: str(body.phone, 40),
     company: str(body.company, 160),
     roles: str(body.roles, 200),
     details: str(body.details, 4000),

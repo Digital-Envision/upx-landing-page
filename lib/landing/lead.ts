@@ -1,3 +1,5 @@
+import type { LandingSlug } from "./content";
+
 /**
  * Outcome of one delivery attempt.
  *
@@ -16,6 +18,8 @@ export interface Lead {
   source: string;
   fullName: string;
   email: string;
+  /** Required in the form, but never enforced server-side — see the API route. */
+  phone: string;
   company: string;
   /** Only present on offshore-developers, which has a "Roles Required" field. */
   roles: string;
@@ -29,12 +33,21 @@ export function splitName(fullName: string): { firstName: string; lastName: stri
   return { firstName: parts.slice(0, -1).join(" "), lastName: parts.at(-1) ?? "" };
 }
 
-const PAGE_LABELS: Record<string, string> = {
+/**
+ * Human-readable page names for the notification email's subject and the
+ * spreadsheet's `page` column. Typed against LandingSlug (a type-only import,
+ * so nothing extra is pulled into the API route at runtime) — adding a landing
+ * page without a label here is a compile error rather than an email that reads
+ * "New enquiry — mobile-app-development".
+ */
+const PAGE_LABELS: Record<LandingSlug, string> = {
   "it-outsourcing": "IT Outsourcing",
   "offshore-developers": "Offshore Developers",
   "custom-software-development": "Custom Software Development",
+  "dedicated-development-teams": "Dedicated Development Teams",
+  "mobile-app-development": "Mobile App Development",
 };
 
 export function pageLabel(source: string): string {
-  return PAGE_LABELS[source] ?? source;
+  return PAGE_LABELS[source as LandingSlug] ?? source;
 }

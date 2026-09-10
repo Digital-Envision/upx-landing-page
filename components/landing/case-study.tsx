@@ -1,5 +1,6 @@
-import type { LandingPageContent } from "@/lib/landing/content";
-import { Eyebrow, LpContainer } from "./ui";
+import type { CaseStudyContent, ProjectsContent } from "@/lib/landing/content";
+import { Eyebrow, LearnMoreButton, LpContainer } from "./ui";
+import { ProjectCards } from "./projects";
 import { VideoThumbnail } from "./video-thumbnail";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -15,7 +16,18 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-export function CaseStudySection({ content }: { content: LandingPageContent["caseStudy"] }) {
+/**
+ * The frames keep the projects row inside this section, directly beneath the
+ * navy card, so it reads as "here is the headline story, and here is the rest
+ * of the work" rather than as a separate band.
+ */
+export function CaseStudySection({
+  content,
+  projects,
+}: {
+  content: CaseStudyContent;
+  projects?: ProjectsContent;
+}) {
   return (
     <section id="case-study" className="bg-white pb-14 pt-16 md:pb-[56px] md:pt-[80px]">
       <LpContainer>
@@ -33,6 +45,14 @@ export function CaseStudySection({ content }: { content: LandingPageContent["cas
                 <Row label="SOLUTION">{content.solution}</Row>
                 <Row label="IMPACT">{content.impact}</Row>
               </dl>
+              {content.href ? (
+                <LearnMoreButton
+                  href={content.href}
+                  tone="white"
+                  label={content.heading}
+                  className="mt-8"
+                />
+              ) : null}
             </div>
 
             <div className="w-full shrink-0 lg:w-[476px]">
@@ -48,6 +68,12 @@ export function CaseStudySection({ content }: { content: LandingPageContent["cas
             </div>
           </div>
         </div>
+
+        {projects ? (
+          <div className="mt-6">
+            <ProjectCards items={projects.items} />
+          </div>
+        ) : null}
       </LpContainer>
     </section>
   );

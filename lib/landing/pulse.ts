@@ -35,6 +35,7 @@ export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
     firstName,
     lastName,
     email: lead.email,
+    phone: lead.phone,
     companyName: lead.company,
     // The page slug, not a display name — Pulse maps it to a pipeline.
     source: lead.source,

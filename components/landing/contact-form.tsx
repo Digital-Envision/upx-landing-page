@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { clsx } from "clsx";
 import { trackLeadSubmitted } from "@/lib/analytics";
 import type { LandingPageContent } from "@/lib/landing/content";
 import { MessageIcon, PaperIcon, ProfileIcon, WorkIcon } from "./figma-icons";
+import { MagePhoneCallFillIcon } from "./icons";
 import { CtaButton } from "./ui";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -12,11 +14,22 @@ type Status = "idle" | "sending" | "sent" | "error";
  * Each Iconly glyph has its own aspect, and the design sizes them individually
  * inside a 25.714px box rather than stretching them to a square.
  */
-type IconSpec = { Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; w: number; h: number };
+type IconSpec = {
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  w: number;
+  h: number;
+  /**
+   * The Iconly glyphs carry the design's 25% fill opacity inside their own
+   * paths. Icons from any other set render at full strength against the
+   * wrapper's navy, so they have to be dimmed here to sit with the rest.
+   */
+  className?: string;
+};
 
 const FIELD_ICONS = {
   profile: { Icon: ProfileIcon, w: 17.14, h: 21.43 },
   message: { Icon: MessageIcon, w: 21.43, h: 19.29 },
+  phone: { Icon: MagePhoneCallFillIcon, w: 21.43, h: 21.43, className: "opacity-25" },
   work: { Icon: WorkIcon, w: 21.43, h: 21.43 },
   paper: { Icon: PaperIcon, w: 18.42, h: 21.67 },
 } as const satisfies Record<string, IconSpec>;
@@ -32,11 +45,11 @@ const EXTRA_FIELD_ICONS = { userGroup: FIELD_ICONS.profile } as const;
  * + 26px icon box + 16px gap.
  */
 function Field({ icon, children }: { icon: IconSpec; children: React.ReactNode }) {
-  const { Icon, w, h } = icon;
+  const { Icon, w, h, className } = icon;
   return (
     <label className="relative block rounded-[13px] bg-white focus-within:ring-2 focus-within:ring-lp-blue/40">
       <span className="pointer-events-none absolute left-4 top-4 flex size-[26px] items-center justify-center text-lp-navy">
-        <Icon width={w} height={h} />
+        <Icon width={w} height={h} className={className} />
       </span>
       {children}
     </label>
@@ -50,14 +63,22 @@ export function ContactForm({
   content,
   slug,
   ctaLabel,
+  variant = "footer",
 }: {
   content: LandingPageContent["form"];
   slug: string;
   ctaLabel: string;
+  /**
+   * The two placements the frames draw. The footer card is lifted off the blue
+   * panel and titled; the hero card sits flat on white and drops the title,
+   * since the page heading beside it already says what the form is for.
+   */
+  variant?: "hero" | "footer";
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const ExtraIcon = content.extraField ? EXTRA_FIELD_ICONS[content.extraField.icon] : null;
+  const card = clsx("rounded-3xl bg-[#f4f6ff]", variant === "footer" && "shadow-xl");
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -93,7 +114,7 @@ export function ContactForm({
 
   if (status === "sent") {
     return (
-      <div className="rounded-3xl bg-[#f4f6ff] p-8 text-center shadow-xl">
+      <div className={clsx(card, "p-8 text-center")}>
         <h3 className="text-[22px] font-semibold text-lp-navy">Thanks — we&rsquo;ve got it.</h3>
         <p className="mt-3 text-[16px] font-medium leading-[26px] text-lp-slate">
           One of our team will reply within one business day.
@@ -110,10 +131,16 @@ export function ContactForm({
   }
 
   return (
-    <div className="rounded-3xl bg-[#f4f6ff] px-6 py-6 shadow-xl sm:px-8">
-      <h3 className="text-[22px] font-semibold text-lp-navy sm:text-[24px]">Contact Our Team</h3>
+    <div className={clsx(card, "px-6 py-6 sm:px-8")}>
+      {variant === "footer" ? (
+        <h3 className="text-[22px] font-semibold text-lp-navy sm:text-[24px]">Contact Our Team</h3>
+      ) : null}
 
-      <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4" noValidate={false}>
+      <form
+        onSubmit={onSubmit}
+        className={clsx("flex flex-col gap-4", variant === "footer" && "mt-6")}
+        noValidate={false}
+      >
         {/* Honeypot — real people never fill this in. */}
         <input
           type="text"
@@ -147,6 +174,19 @@ export function ContactForm({
             maxLength={200}
             placeholder="Business Email*"
             aria-label="Business email (required)"
+          />
+        </Field>
+
+        <Field icon={FIELD_ICONS.phone}>
+          <input
+            className={inputClass}
+            name="phone"
+            type="tel"
+            required
+            autoComplete="tel"
+            maxLength={40}
+            placeholder="Phone Number*"
+            aria-label="Phone number (required)"
           />
         </Field>
 

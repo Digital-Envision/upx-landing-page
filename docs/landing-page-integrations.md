@@ -1,8 +1,11 @@
 # Landing-page contact form — integration setup
 
-The contact form on `/it-outsourcing`, `/offshore-developers` and
-`/custom-software-development` posts to `POST /api/contact`, which fans the
-enquiry out to three destinations concurrently:
+The contact form on `/it-outsourcing`, `/offshore-developers`,
+`/custom-software-development`, `/dedicated-development-teams` and
+`/mobile-app-development` posts to `POST /api/contact`, which fans the enquiry
+out to three destinations concurrently. The last two pages render the form
+twice — once in the hero, once in the footer — per the Figma frames; both post
+to the same endpoint and are indistinguishable downstream.
 
 | # | Destination | Module | Env flag |
 |---|-------------|--------|----------|
@@ -51,15 +54,19 @@ Every enquiry becomes one row, with these columns in this order:
 | 2 | `page` | `Offshore Developers` |
 | 3 | `fullName` | `Jamie Nguyen` |
 | 4 | `email` | `jamie@example.com.au` |
-| 5 | `company` | `Riverbend Logistics` |
-| 6 | `rolesRequired` | `2 backend, 1 QA` |
-| 7 | `details` | the free-text project description |
-| 8 | `reference` | the lead's uuid, also quoted in the notification email |
+| 5 | `phone` | `+61 400 000 000` |
+| 6 | `company` | `Riverbend Logistics` |
+| 7 | `rolesRequired` | `2 backend, 1 QA` |
+| 8 | `details` | the free-text project description |
+| 9 | `reference` | the lead's uuid, also quoted in the notification email |
 
-`rolesRequired` is only populated on the offshore-developers page; the other
-two send an empty string.
+`rolesRequired` is only populated on the offshore-developers page; every other
+page sends an empty string. `phone` is marked required in the form and enforced
+by the browser, but the API deliberately does not validate it — a name and a
+working email are enough to follow up on, and rejecting the request would throw
+the enquiry away — so it can still arrive empty.
 
-**You do not have to use all eight, or keep this order.** The Graph provider
+**You do not have to use all nine, or keep this order.** The Graph provider
 reads the table's real header row and lays each enquiry out to match, so you can
 drop, reorder or rename columns in Excel and submissions keep working. Header
 matching ignores case, spaces and punctuation, and accepts common variants —
@@ -159,8 +166,8 @@ If you would rather skip the link lookup, set `LEAD_SHEET_DRIVE_ID` and
 1. Create the workbook in SharePoint or OneDrive for Business, e.g.
    `Upscalix Leads.xlsx`.
 2. Add a header row with exactly these columns:
-   `submittedAt`, `page`, `fullName`, `email`, `company`, `rolesRequired`,
-   `details`, `reference`.
+   `submittedAt`, `page`, `fullName`, `email`, `phone`, `company`,
+   `rolesRequired`, `details`, `reference`.
 3. Select the header row and the row beneath it → **Insert → Table**
    (tick "My table has headers"). Name it `Leads`. The Power Automate
    connector can only write to a *named table*, not a bare sheet.
@@ -176,6 +183,7 @@ If you would rather skip the link lookup, set `LEAD_SHEET_DRIVE_ID` and
     "page": { "type": "string" },
     "fullName": { "type": "string" },
     "email": { "type": "string" },
+    "phone": { "type": "string" },
     "company": { "type": "string" },
     "rolesRequired": { "type": "string" },
     "details": { "type": "string" },
@@ -214,7 +222,7 @@ function doPost(e) {
   const row = JSON.parse(e.postData.contents);
   SpreadsheetApp.getActiveSheet().appendRow([
     row.submittedAt, row.page, row.fullName, row.email,
-    row.company, row.rolesRequired, row.details, row.reference,
+    row.phone, row.company, row.rolesRequired, row.details, row.reference,
   ]);
   return ContentService.createTextOutput('ok');
 }
@@ -270,6 +278,16 @@ The pipeline is chosen from the page the enquiry came from:
 | `it-outsourcing` | Staff | `[JN] IT Outsourcing` |
 | `offshore-developers` | Staff | `[JN] Offshore Developers` |
 | `custom-software-development` | Project | `[JN] Custom Software Development` |
+| `dedicated-development-teams` | Staff | `[JN] Dedicated Development Teams` |
+| `mobile-app-development` | Staff | `[JN] Mobile App Development` |
+
+> **The last two rows are not live yet.** Pulse validates `source` against its
+> own allowlist, and as of 2026-09-09 the deployed API (staging) accepts only
+> `it-outsourcing`, `offshore-developers`, `custom-software-development`,
+> `hire-a-virtual-assistant`, `virtual-assistant-for-small-business` and
+> `specialist-virtual-assistants`. Enquiries from the two new pages are rejected
+> `400` and logged as `[pulse] sync rejected (permanent)`; the email and
+> spreadsheet destinations still receive them. See the Pulse side below.
 
 `leadId` is the idempotency key. Pulse stores it on `deals.external_lead_id`
 behind a partial unique index, so a retry — or a visitor double-clicking submit
@@ -284,6 +302,7 @@ The payload this app sends:
   "firstName": "Jamie",
   "lastName": "Nguyen",
   "email": "jamie@example.com.au",
+  "phone": "+61 400 000 000",
   "companyName": "Riverbend Logistics",
   "source": "it-outsourcing",
   "notes": "Roles required: …\n\n<project details>"
@@ -291,8 +310,8 @@ The payload this app sends:
 ```
 
 `source` is the page **slug**, not a display name — Pulse maps it to a pipeline
-and rejects anything outside the three above. `notes` lands in the deal's
-description.
+and rejects, with a `400`, anything outside its own allowlist. `notes` lands in
+the deal's description.
 
 To switch it on, set these to the same values as the Pulse backend:
 
@@ -312,9 +331,18 @@ and `src/public-leads/contract.spec.ts` verifies real captured payloads from
 this app against that DTO and the signature check. Regenerate the fixture with
 `scratchpad/pulsetest/capture.mjs` if the payload changes.
 
-Adding a fourth landing page means adding its slug to `UPSCALIX_LEAD_PAGES` in
-the DTO and to `LEAD_PAGE_ROUTING` in `public-lead.service.ts`, or Pulse will
-reject it with a 400.
+Adding a landing page means adding its slug to `UPSCALIX_LEAD_PAGES` in the DTO
+**and** to `LEAD_PAGE_ROUTING` in `public-lead.service.ts`, or Pulse will reject
+it with a 400. Both lists are keyed by the same union type, so missing one is a
+compile error — but forgetting both is not, and the landing page will happily
+keep posting a slug Pulse refuses.
+
+This repo's side is drift-proofed: `PAGE_LABELS` in `lib/landing/lead.ts` is
+typed `Record<LandingSlug, string>`, so a new page without a label fails the
+build rather than sending an email titled `New enquiry — mobile-app-development`.
+Nothing equivalent can span the two repositories, so **adding a landing page is
+a two-repository change** — verify it with the curl below before pointing ad
+spend at the new URL.
 
 ---
 
@@ -323,11 +351,21 @@ reject it with a 400.
 With the server running:
 
 ```bash
-curl -s -X POST http://localhost:3000/api/contact -H 'Content-Type: application/json' -d '{"fullName":"Test Person","email":"test@example.com","company":"Acme","details":"hello","source":"it-outsourcing"}'
+curl -s -X POST http://localhost:3000/api/contact -H 'Content-Type: application/json' -d '{"fullName":"Test Person","email":"test@example.com","phone":"+61400000000","company":"Acme","details":"hello","source":"it-outsourcing"}'
 ```
 
-Expected: `{"ok":true}`. Check the server log for `[notify]`, `[sheet]` or
-`[pulse]` warnings — each names the env var it is missing.
+Expected: `{"ok":true}`. A `200` only means *at least one* destination took the
+lead, so read the server log rather than the response — every submission logs a
+per-destination summary:
+
+```
+[contact] partial delivery for lead <uuid> — email:delivered sheet:delivered pulse:failed
+```
+
+That line is printed whenever any destination fails; a fully clean run logs
+nothing. `[notify]`, `[sheet]` and `[pulse]` warnings each name the env var they
+are missing. Swap `source` for the slug you want to exercise — this is the
+quickest way to confirm a newly added page is accepted by all three.
 
 The form also carries a hidden `website` honeypot field. Submissions that fill
 it get a `200` with no side effects, so bots don't learn to work around it.
