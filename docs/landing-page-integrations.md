@@ -271,23 +271,19 @@ in the `New` stage** stamped `DealSource.UPSCALIX_LANDING_PAGE`. The deal is
 left unowned deliberately: it stays visibly up-for-grabs in the New column, and
 the team already gets the notification email above on every submission.
 
-The pipeline is chosen from the page the enquiry came from:
+The pipeline comes from the brand's default — Staff — overridden per page only
+where that default is wrong:
 
 | Landing page | Pulse pipeline | Deal name |
 |---|---|---|
 | `it-outsourcing` | Staff | `[JN] IT Outsourcing` |
 | `offshore-developers` | Staff | `[JN] Offshore Developers` |
-| `custom-software-development` | Project | `[JN] Custom Software Development` |
+| `custom-software-development` | **Project** (override) | `[JN] Custom Software Development` |
 | `dedicated-development-teams` | Staff | `[JN] Dedicated Development Teams` |
 | `mobile-app-development` | Staff | `[JN] Mobile App Development` |
 
-> **The last two rows are not live yet.** Pulse validates `source` against its
-> own allowlist, and as of 2026-09-09 the deployed API (staging) accepts only
-> `it-outsourcing`, `offshore-developers`, `custom-software-development`,
-> `hire-a-virtual-assistant`, `virtual-assistant-for-small-business` and
-> `specialist-virtual-assistants`. Enquiries from the two new pages are rejected
-> `400` and logged as `[pulse] sync rejected (permanent)`; the email and
-> spreadsheet destinations still receive them. See the Pulse side below.
+Only the override is configured in Pulse. A page not listed above still reaches
+the CRM: it lands in Staff and is titled from the `sourceLabel` this app sends.
 
 `leadId` is the idempotency key. Pulse stores it on `deals.external_lead_id`
 behind a partial unique index, so a retry — or a visitor double-clicking submit
@@ -304,14 +300,24 @@ The payload this app sends:
   "email": "jamie@example.com.au",
   "phone": "+61 400 000 000",
   "companyName": "Riverbend Logistics",
+  "brand": "upscalix",
   "source": "it-outsourcing",
+  "sourceLabel": "IT Outsourcing",
   "notes": "Roles required: …\n\n<project details>"
 }
 ```
 
-`source` is the page **slug**, not a display name — Pulse maps it to a pipeline
-and rejects, with a `400`, anything outside its own allowlist. `notes` lands in
-the deal's description.
+Three fields decide where the deal lands:
+
+- **`brand`** is the closed set — `upscalix`, `vafe` or `scalout`. It carries the
+  deal source, the record source and the default pipeline, and only changes when
+  a whole new brand starts feeding Pulse.
+- **`source`** is the page slug. It is *not* an allowlist: Pulse checks only that
+  it looks like a slug. A page Pulse has never heard of still creates a deal.
+- **`sourceLabel`** names the deal. It comes from `PAGE_LABELS` in
+  `lib/landing/lead.ts`, so the site that owns the page owns its name.
+
+`notes` lands in the deal's description.
 
 To switch it on, set these to the same values as the Pulse backend:
 
@@ -328,14 +334,30 @@ PULSE_SYNC_SECRET=<shared secret>
 Implemented in `Virtual-Office/backend/src/public-leads/`. If you change the
 wire format, both ends must move together: `CreatePublicLeadDto` validates it,
 and `src/public-leads/contract.spec.ts` verifies real captured payloads from
-this app against that DTO and the signature check. Regenerate the fixture with
-`scratchpad/pulsetest/capture.mjs` if the payload changes.
+this app against that DTO and the signature check. Regenerate the fixture after
+any payload change:
 
-Adding a landing page means adding its slug to `UPSCALIX_LEAD_PAGES` in the DTO
-**and** to `LEAD_PAGE_ROUTING` in `public-lead.service.ts`, or Pulse will reject
-it with a 400. Both lists are keyed by the same union type, so missing one is a
-compile error — but forgetting both is not, and the landing page will happily
-keep posting a slug Pulse refuses.
+```bash
+node --experimental-strip-types scripts/capture-pulse-contract.mjs \
+  ../Virtual-Office/backend/src/public-leads/__fixtures__/payloads.json
+```
+
+That script drives the real `syncLeadToPulse()` against a throwaway local
+server, so the fixture is the bytes this app actually sends rather than a
+hand-written guess.
+
+**Adding a landing page needs no change in Pulse.** Add the slug to
+`LANDING_PAGES` and its label to `PAGE_LABELS`, and the enquiry routes itself.
+Pulse only needs touching to onboard a new *brand*, or to give a page a pipeline
+other than its brand's default — `BRAND_ROUTING[brand].pipelineBySource` in
+`public-lead.service.ts`.
+
+This was not always true. Until 2026-09-10 `source` was validated against a
+hardcoded allowlist, so a page Pulse had not been told about was rejected `400`
+while the visitor still saw a successful submission — the lead reached email and
+the spreadsheet but never the CRM. The failure mode is now the other way round:
+an unrecognised page still becomes a deal, at worst with a title that needs
+tidying.
 
 This repo's side is drift-proofed: `PAGE_LABELS` in `lib/landing/lead.ts` is
 typed `Record<LandingSlug, string>`, so a new page without a label fails the
