@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import type { DeliveryResult, Lead } from "./lead";
-import { splitName } from "./lead";
+import { pageLabel, splitName } from "./lead";
 
 /**
  * Pushes a landing-page enquiry into Pulse (the Virtual-Office CRM) as a lead —
@@ -12,8 +12,8 @@ import { splitName } from "./lead";
  * deal behind a unique index, so a retry resolves to the original deal rather
  * than creating a duplicate.
  *
- * Pulse picks the pipeline from `source` — the two staffing pages route to
- * Staff, custom software to Project.
+ * Pulse picks the pipeline from the brand's default, overridden per page where
+ * that default is wrong — custom software is a Project, everything else Staff.
  *
  * Env-gated and never throws.
  */
@@ -37,8 +37,13 @@ export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
     email: lead.email,
     phone: lead.phone,
     companyName: lead.company,
-    // The page slug, not a display name — Pulse maps it to a pipeline.
+    // Pulse serves three brands from one endpoint. `brand` carries the deal and
+    // record source; `source` is a free-form page slug, so launching a landing
+    // page no longer needs Pulse redeployed to accept it. `sourceLabel` names
+    // the deal — it lives here because this repo owns the page and its name.
+    brand: "upscalix",
     source: lead.source,
+    sourceLabel: pageLabel(lead.source),
     notes: [lead.roles ? `Roles required: ${lead.roles}` : "", lead.details]
       .filter(Boolean)
       .join("\n\n"),
