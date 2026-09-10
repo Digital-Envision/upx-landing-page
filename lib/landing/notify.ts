@@ -37,6 +37,7 @@ export async function notifyLead(lead: Lead): Promise<DeliveryResult> {
     ["Page", page],
     ["Name", lead.fullName],
     ["Email", lead.email],
+    ["Phone", lead.phone || "—"],
     ["Company", lead.company || "—"],
     ...(lead.roles ? ([["Roles required", lead.roles]] as [string, string][]) : []),
     ["Details", lead.details || "—"],

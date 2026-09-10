@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { clsx } from "clsx";
-import type { LandingPageContent } from "@/lib/landing/content";
+import type { FigmaLandingPage, HouseLandingPage } from "@/lib/landing/content";
+import { NAV_CTA_LABEL } from "@/lib/landing/content";
+import { ContactForm } from "./contact-form";
 import { CtaButton, Eyebrow, LpContainer } from "./ui";
 
 /** Dark navy pill carrying the headline statistic. */
@@ -8,7 +10,7 @@ function StatPill({
   stat,
   className,
 }: {
-  stat: LandingPageContent["hero"]["stat"];
+  stat: HouseLandingPage["hero"]["stat"];
   className?: string;
 }) {
   const Icon = stat.icon;
@@ -69,7 +71,7 @@ function HeroBadge({
   size,
   className,
 }: {
-  badge: NonNullable<LandingPageContent["hero"]["badge"]>;
+  badge: NonNullable<HouseLandingPage["hero"]["badge"]>;
   /** The design sizes this differently per page: 84px on page 1, 72px on 2 and 3. */
   size: 72 | 84;
   className?: string;
@@ -99,7 +101,7 @@ function HeroBadge({
   );
 }
 
-export function LandingHero({ content }: { content: LandingPageContent }) {
+export function LandingHero({ content }: { content: HouseLandingPage }) {
   const { hero, cta } = content;
 
   return (
@@ -216,6 +218,36 @@ export function LandingHero({ content }: { content: LandingPageContent }) {
               />
             ) : null}
           </div>
+        </div>
+      </LpContainer>
+    </section>
+  );
+}
+
+/**
+ * The hero the Figma frames actually draw: copy on the left, the enquiry form
+ * where the house layout puts its photograph. The submit button reads
+ * "Book Free Consultation" on every frame, even where the page's own CTA copy
+ * differs — that wording drives the mid-page band and the footer form instead.
+ */
+export function FigmaLandingHero({ content }: { content: FigmaLandingPage }) {
+  const { hero, form, slug } = content;
+
+  return (
+    <section id="hero" className="bg-white pb-12 pt-8 md:pb-[46px] md:pt-[56px]">
+      <LpContainer className="flex flex-col items-center gap-10 lg:flex-row lg:gap-12">
+        <div className="w-full lg:flex-1">
+          <Eyebrow className="mb-4">{hero.eyebrow}</Eyebrow>
+          <h1 className="text-[clamp(2rem,5.4vw,3.25rem)] font-bold leading-[1.1] text-balance text-lp-navy">
+            {hero.heading}
+          </h1>
+          <p className="mt-4 text-[18px] font-medium leading-[32px] text-lp-slate sm:text-[20px] sm:leading-[36px] lg:pr-8">
+            {hero.body}
+          </p>
+        </div>
+
+        <div className="w-full shrink-0 lg:w-[560px]">
+          <ContactForm content={form} slug={slug} ctaLabel={NAV_CTA_LABEL} variant="hero" />
         </div>
       </LpContainer>
     </section>

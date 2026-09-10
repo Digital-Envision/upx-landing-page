@@ -35,11 +35,16 @@ const ICONS = [
   "hugeicons:computer-user",
   "hugeicons:flow",
   "hugeicons:api-gateway",
+  // page 4 — mobile app development options
+  "hugeicons:apple",
+  "hugeicons:android",
   // hero stat pills
   "hugeicons:refresh-04",
   "hugeicons:dashboard-square-03",
   "hugeicons:piggy-bank",
   // form + misc
+  "mage:phone-call-fill",
+  "akar-icons:chevron-right-small",
   "hugeicons:user",
   "hugeicons:mail-01",
   "hugeicons:building-03",
