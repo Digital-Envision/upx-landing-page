@@ -679,12 +679,12 @@ const customSoftwareDevelopment: FigmaLandingPage = {
     description:
       "From idea to deployment, Upscalix builds scalable custom software for Australian businesses — internal systems, customer portals, web and mobile apps, and integrations.",
   },
-  nav: [
-    { label: "OUR WORK", href: "#case-study" },
-    { label: "WHAT WE CAN BUILD", href: "#what-we-build" },
-    { label: "HOW WE WORK", href: "#process" },
-    { label: "FAQ", href: "#faq" },
-  ],
+  /**
+   * The frame has no in-page nav — just the logo and the booking button — so
+   * there is nothing to link. An ads page has one job, and section links are an
+   * invitation to wander off it.
+   */
+  nav: [],
   cta: { label: "Discuss Your Project", href: BOOKING_URL },
   hero: {
     eyebrow: "CUSTOM SOFTWARE DEVELOPMENT",
