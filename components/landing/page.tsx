@@ -22,11 +22,6 @@ import { ProjectsSection } from "./projects";
 import { FaqSection } from "./faq";
 import { ContactSection } from "./contact-section";
 
-/** The offer grid is whatever the second nav link points at. */
-function offerAnchor(content: LandingPageContent) {
-  return content.nav[1]?.href.replace("#", "") ?? "offer";
-}
-
 /**
  * The skeleton the first three pages shipped with: a photographic hero, an
  * extra "Our solution" grid, and the case study held back until after the
@@ -40,7 +35,7 @@ function HouseLayout({ content }: { content: HouseLandingPage }) {
       <ChallengeSection content={content.challenge} />
       <CtaBand content={content.ctaBand} cta={content.cta} />
       <SolutionSection content={content.solution} />
-      <OfferSection content={content.offer} id={offerAnchor(content)} />
+      <OfferSection content={content.offer} id={content.offer.id} />
       <StatsSection content={content.stats} />
       <ProcessSection content={content.process} />
       <CaseStudySection content={content.caseStudy} />
@@ -58,9 +53,8 @@ function HouseLayout({ content }: { content: HouseLandingPage }) {
  * alone under its own heading instead of sitting beneath the navy card.
  */
 function FigmaLayout({ content }: { content: FigmaLandingPage }) {
-  const anchor = offerAnchor(content);
   const offerLeads = !content.challenge;
-  const offer = <OfferSection content={content.offer} id={anchor} />;
+  const offer = <OfferSection content={content.offer} id={content.offer.id} />;
 
   return (
     <>
