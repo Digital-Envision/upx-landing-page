@@ -132,6 +132,12 @@ interface BaseLandingPage {
     heading: string;
     body: string;
     grid: OfferGrid;
+    /**
+     * Anchor for the section. Held here rather than read back out of `nav`,
+     * because a page can drop its nav — the frames for the newer pages have
+     * none — without its sections losing their ids.
+     */
+    id: string;
   };
   stats: { eyebrow: string; heading: string; items: { value: string; label: string }[] };
   process: {
@@ -368,6 +374,7 @@ const itOutsourcing: HouseLandingPage = {
     ],
   },
   offer: {
+    id: "engagement-models",
     eyebrow: "ENGAGEMENT MODELS",
     heading: "Choose the Engagement Model that Fits Your Business",
     body: "Whether you need one developer or an entire software engineering team, Upscalix offers flexible engagement models tailored to your business objectives.",
@@ -566,6 +573,7 @@ const offshoreDevelopers: HouseLandingPage = {
     ],
   },
   offer: {
+    id: "available-roles",
     eyebrow: "AVAILABLE ROLES",
     heading: "Build The Team You Need",
     body: "Every role plugs directly into your existing team structure and workflow.",
@@ -671,12 +679,12 @@ const customSoftwareDevelopment: FigmaLandingPage = {
     description:
       "From idea to deployment, Upscalix builds scalable custom software for Australian businesses — internal systems, customer portals, web and mobile apps, and integrations.",
   },
-  nav: [
-    { label: "OUR WORK", href: "#case-study" },
-    { label: "WHAT WE CAN BUILD", href: "#what-we-build" },
-    { label: "HOW WE WORK", href: "#process" },
-    { label: "FAQ", href: "#faq" },
-  ],
+  /**
+   * The frame has no in-page nav — just the logo and the booking button — so
+   * there is nothing to link. An ads page has one job, and section links are an
+   * invitation to wander off it.
+   */
+  nav: [],
   cta: { label: "Discuss Your Project", href: BOOKING_URL },
   hero: {
     eyebrow: "CUSTOM SOFTWARE DEVELOPMENT",
@@ -702,6 +710,7 @@ const customSoftwareDevelopment: FigmaLandingPage = {
       "Let's discuss your business challenges and identify the right software solution for your organisation.",
   },
   offer: {
+    id: "what-we-build",
     eyebrow: "WHAT WE CAN BUILD",
     heading: "Solutions We Deliver",
     body: "From internal tools to customer-facing platforms, we build the systems your business runs on — designed to fit your workflows, not the other way around.",
@@ -817,12 +826,12 @@ const dedicatedDevelopmentTeams: FigmaLandingPage = {
     description:
       "Build a dedicated software development team that works as part of your business. Upscalix helps Australian companies scale engineering without local hiring delays.",
   },
-  nav: [
-    { label: "OUR WORK", href: "#case-study" },
-    { label: "ENGAGEMENT MODELS", href: "#engagement-models" },
-    { label: "HOW WE WORK", href: "#process" },
-    { label: "FAQ", href: "#faq" },
-  ],
+  /**
+   * The frame has no in-page nav — just the logo and the booking button — so
+   * there is nothing to link. An ads page has one job, and section links are an
+   * invitation to wander off it.
+   */
+  nav: [],
   cta: { label: "Book Free Consultation", href: BOOKING_URL },
   hero: {
     eyebrow: "DEDICATED DEVELOPMENT TEAMS",
@@ -846,6 +855,7 @@ const dedicatedDevelopmentTeams: FigmaLandingPage = {
     body: "Book a free consultation and discover how Upscalix can help you build a dedicated development team.",
   },
   offer: {
+    id: "engagement-models",
     eyebrow: "ENGAGEMENT MODELS",
     heading: "Choose the Engagement Model that Fits Your Business",
     body: "Whether you need one developer or an entire software engineering team, Upscalix offers flexible engagement models tailored to your business objectives.",
@@ -973,12 +983,12 @@ const mobileAppDevelopment: FigmaLandingPage = {
     description:
       "Hire offshore mobile app developers for native iOS, Android, cross-platform and progressive web apps. Australian-managed teams working in your timezone.",
   },
-  nav: [
-    { label: "OUR WORK", href: "#case-study" },
-    { label: "WHAT WE CAN BUILD", href: "#what-we-build" },
-    { label: "HOW WE WORK", href: "#process" },
-    { label: "FAQ", href: "#faq" },
-  ],
+  /**
+   * The frame has no in-page nav — just the logo and the booking button — so
+   * there is nothing to link. An ads page has one job, and section links are an
+   * invitation to wander off it.
+   */
+  nav: [],
   cta: { label: "Discuss Your Project", href: BOOKING_URL },
   hero: {
     eyebrow: "MOBILE APP DEVELOPMENT",
@@ -990,6 +1000,7 @@ const mobileAppDevelopment: FigmaLandingPage = {
     body: "Let's discuss your business challenges and identify the right software solution for your organisation.",
   },
   offer: {
+    id: "what-we-build",
     eyebrow: "WHAT WE CAN BUILD",
     heading: "Mobile Apps Development Options",
     body: "Reach your customer with an app tailored to their needs",
