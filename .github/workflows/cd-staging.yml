@@ -13,7 +13,6 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         env:
-          NODE_ENV: ${{ secrets.NODE_ENV }}
           NOTIFY_EMAIL_ENABLED: ${{ secrets.NOTIFY_EMAIL_ENABLED }}
           SMTP2GO_API_KEY: ${{ secrets.SMTP2GO_API_KEY }}
           NOTIFY_EMAIL_FROM: ${{ secrets.NOTIFY_EMAIL_FROM }}
@@ -26,7 +25,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          envs: NODE_ENV,APP_PORT,NOTIFY_EMAIL_ENABLED,SMTP2GO_API_KEY,NOTIFY_EMAIL_FROM,NOTIFY_EMAIL_TO,PULSE_SYNC_ENABLED,PULSE_SYNC_URL,PULSE_SYNC_SECRET
+          envs: APP_PORT,NOTIFY_EMAIL_ENABLED,SMTP2GO_API_KEY,NOTIFY_EMAIL_FROM,NOTIFY_EMAIL_TO,PULSE_SYNC_ENABLED,PULSE_SYNC_URL,PULSE_SYNC_SECRET
           script: |
             set -e # Exit immediately if any command fails
             echo "Deploying app on the server..."
@@ -42,9 +41,11 @@ jobs:
             git checkout staging
             git pull origin staging
 
+            # Unquoted EOF so the secrets are expanded into the file.
+            # NODE_ENV is deliberately absent: Next sets it itself, and a
+            # non-standard value makes the build resolve React's dev bundle.
             echo "Writing environment variables..."
-            cat << 'EOF' > .env
-            NODE_ENV=$NODE_ENV
+            cat << EOF > .env
             NOTIFY_EMAIL_ENABLED=$NOTIFY_EMAIL_ENABLED
             SMTP2GO_API_KEY=$SMTP2GO_API_KEY
             NOTIFY_EMAIL_FROM=$NOTIFY_EMAIL_FROM
@@ -57,7 +58,7 @@ jobs:
 
             # Build and reload service
             bun install --frozen-lockfile
-            bun run build
+            NODE_ENV=production bun run build
 
             pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
             pm2 save
