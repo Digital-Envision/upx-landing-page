@@ -132,7 +132,9 @@ const LEADS = [
     },
   },
   {
-    label: "dedicated-development-teams, a page Pulse has no entry for",
+    label:
+      "dedicated-development-teams, a page Pulse has no entry for — " +
+      "and a visitor who ARRIVED on another page",
     lead: {
       id: "d41f0c9e-5a7b-4c3d-8e1f-0a2b4c6d8e10",
       source: "dedicated-development-teams",
@@ -151,8 +153,12 @@ const LEADS = [
         campaignContent: "",
         gclid: "",
       },
-      // Arrived on a DIFFERENT page from the one they submitted on — first
-      // touch, not the current page.
+      // Deliberately NOT this page. First touch is where the visit STARTED,
+      // so someone who arrived on the IT Outsourcing ad and submitted from the
+      // dedicated-teams page is attributed to the former. A fixture where
+      // every landingPage matched its own slug would let a producer that
+      // simply derived the URL from the slug pass unnoticed, which is the bug
+      // this case exists to catch.
       landingPage: "https://upscalix.com.au/it-outsourcing",
       submittedAt: "2026-09-10T01:00:00.000Z",
     },
@@ -278,6 +284,13 @@ const { captureLeadInPulse } = await import(
 
 /** Drives one producer over every enquiry and returns its captured requests. */
 async function capture(send, publicUrl, leads = LEADS) {
+  // The fixture records `publicUrl`, not the loopback URL the producer really
+  // hit — the port differs on every run, and the consumer asserts on the
+  // documented production path. That substitution is only safe if the path
+  // actually matched: without this check a producer posting to the WRONG
+  // endpoint still writes a fixture claiming the right one, and the two
+  // producers here differ in nothing else.
+  const expectedPath = new URL(publicUrl).pathname;
   const fixtures = [];
   for (const { label, lead } of leads) {
     const before = captured.length;
@@ -285,6 +298,12 @@ async function capture(send, publicUrl, leads = LEADS) {
     const req = captured[before];
     if (result !== "delivered" || !req) {
       console.error(`FAILED to capture "${label}" — result was ${result}`);
+      process.exit(1);
+    }
+    if (req.path !== expectedPath) {
+      console.error(
+        `WRONG ENDPOINT for "${label}" — posted to ${req.path}, expected ${expectedPath}`,
+      );
       process.exit(1);
     }
     fixtures.push({
