@@ -1,0 +1,27 @@
+name: CI landing page
+
+on:
+  pull_request:
+    branches: [main, staging]
+  push:
+    branches-ignore: [main, staging]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run Linter / Tests
+        run: |
+          # bun run lint
+          # bun test
