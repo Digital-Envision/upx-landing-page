@@ -1,13 +1,19 @@
-// Captures the exact bytes this app sends to Pulse, for the contract test that
-// lives on the consumer side (Virtual-Office backend/src/public-leads).
+// Captures the exact bytes this app sends to Pulse, for the contract tests that
+// live on the consumer side (Virtual-Office backend/src/public-leads and
+// backend/src/leads).
 //
-// It drives the real syncLeadToPulse() against a throwaway local server rather
-// than rebuilding the payload by hand — a fixture assembled independently would
-// pass while the producer drifted, which is the one failure the contract test
-// exists to catch.
+// It drives the real syncLeadToPulse() / captureLeadInPulse() against a
+// throwaway local server rather than rebuilding the payloads by hand — a
+// fixture assembled independently would pass while the producer drifted, which
+// is the one failure a contract test exists to catch.
 //
 //   node --experimental-strip-types scripts/capture-pulse-contract.mjs \
-//     ../Virtual-Office/backend/src/public-leads/__fixtures__/payloads.json
+//     ../Virtual-Office/backend/src/public-leads/__fixtures__/payloads.json \
+//     ../Virtual-Office/backend/src/leads/__fixtures__/capture-payloads.json
+//
+// The second path is optional; omit it to refresh the deal payloads alone.
+// ONE list of enquiries feeds both producers, so the two wire formats cannot
+// drift apart on the input side.
 //
 // Requires Node >= 22.6 for type stripping. The secret below is the fixture's,
 // not a real one: the consumer verifies against the same literal.
@@ -39,8 +45,11 @@ register(
 
 const SECRET = "contract-test-secret";
 const out = process.argv[2];
+const captureOut = process.argv[3];
 if (!out) {
-  console.error("usage: capture-pulse-contract.mjs <path to payloads.json>");
+  console.error(
+    "usage: capture-pulse-contract.mjs <payloads.json> [<capture-payloads.json>]",
+  );
   process.exit(1);
 }
 
@@ -57,6 +66,17 @@ const LEADS = [
       company: "Riverbend Logistics",
       roles: "",
       details: "Need a team of 3 for a 6-month build.",
+      // Google Ads, fully tagged: the shape every paid enquiry should carry.
+      attribution: {
+        campaignSource: "google",
+        campaignMedium: "cpc",
+        campaignName: "au-it-outsourcing",
+        adGroup: "outsourcing-generic",
+        keyword: "it outsourcing australia",
+        campaignContent: "rsa-1",
+        gclid: "Cj0KCQjw_YemBhDyARIsACyd7-example",
+      },
+      landingPage: "https://upscalix.com.au/it-outsourcing",
       submittedAt: "2026-08-03T04:15:22.000Z",
     },
   },
@@ -71,6 +91,17 @@ const LEADS = [
       company: "",
       roles: "2 backend, 1 QA",
       details: "Scaling the platform team.",
+      // A hand-built UTM link with no click id — LinkedIn, a newsletter.
+      attribution: {
+        campaignSource: "linkedin",
+        campaignMedium: "social",
+        campaignName: "offshore-q3",
+        adGroup: "",
+        keyword: "",
+        campaignContent: "",
+        gclid: "",
+      },
+      landingPage: "https://upscalix.com.au/offshore-developers",
       submittedAt: "2026-08-03T05:20:00.000Z",
     },
   },
@@ -85,6 +116,18 @@ const LEADS = [
       company: "",
       roles: "",
       details: "",
+      // A direct visit: every field blank, which §7.2 requires to be accepted
+      // rather than rejected or defaulted.
+      attribution: {
+        campaignSource: "",
+        campaignMedium: "",
+        campaignName: "",
+        adGroup: "",
+        keyword: "",
+        campaignContent: "",
+        gclid: "",
+      },
+      landingPage: "https://upscalix.com.au/custom-software-development",
       submittedAt: "2026-08-03T06:00:00.000Z",
     },
   },
@@ -99,6 +142,18 @@ const LEADS = [
       company: "Kestrel Health",
       roles: "",
       details: "Looking to stand up a dedicated squad.",
+      attribution: {
+        campaignSource: "bing",
+        campaignMedium: "cpc",
+        campaignName: "dedicated-teams",
+        adGroup: "",
+        keyword: "dedicated dev team",
+        campaignContent: "",
+        gclid: "",
+      },
+      // Arrived on a DIFFERENT page from the one they submitted on — first
+      // touch, not the current page.
+      landingPage: "https://upscalix.com.au/it-outsourcing",
       submittedAt: "2026-09-10T01:00:00.000Z",
     },
   },
@@ -113,7 +168,78 @@ const LEADS = [
       company: "",
       roles: "",
       details: "Cross-platform build, iOS first.",
+      attribution: {
+        campaignSource: "google",
+        campaignMedium: "cpc",
+        campaignName: "mobile-app",
+        adGroup: "ios-first",
+        keyword: "app developers",
+        campaignContent: "",
+        gclid: "EAIaIQobChMI-example",
+      },
+      landingPage: "https://upscalix.com.au/mobile-app-development",
       submittedAt: "2026-09-10T02:00:00.000Z",
+    },
+  },
+];
+
+/**
+ * Enquiries captured for the LEAD-CAPTURE producer only.
+ *
+ * They cannot join `LEADS`: the deal-side contract test asserts exactly one
+ * payload per landing page, so a sixth entry reusing a slug fails it. These
+ * exercise what the lead endpoint validates and the deal endpoint does not.
+ */
+const CAPTURE_ONLY_LEADS = [
+  {
+    label: "unusable phone — dropped so Pulse does not reject the enquiry",
+    lead: {
+      id: "f61b2c8a-9d0e-4f12-8a34-5b6c7d8e9f01",
+      source: "it-outsourcing",
+      fullName: "Dana Whitfield",
+      email: "dana@example.com.au",
+      // The form requires a phone in the BROWSER and the API route
+      // deliberately does not enforce it, so text really does arrive here.
+      // Pulse's phone rule would 400 the whole submission over it.
+      phone: "call me",
+      company: "",
+      roles: "",
+      details: "Prefer a call back.",
+      attribution: {
+        campaignSource: "",
+        campaignMedium: "",
+        campaignName: "",
+        adGroup: "",
+        keyword: "",
+        campaignContent: "",
+        gclid: "",
+      },
+      landingPage: "https://upscalix.com.au/it-outsourcing",
+      submittedAt: "2026-09-18T03:00:00.000Z",
+    },
+  },
+  {
+    label: "phone-shaped but short — under Pulse's six-digit identity floor",
+    lead: {
+      id: "0c9d8e7f-6a5b-4c3d-2e1f-0a9b8c7d6e5f",
+      source: "mobile-app-development",
+      fullName: "Kit Alvarez",
+      email: "kit@example.com.au",
+      phone: "12345",
+      company: "Northpoint",
+      roles: "",
+      details: "",
+      attribution: {
+        campaignSource: "",
+        campaignMedium: "",
+        campaignName: "",
+        adGroup: "",
+        keyword: "",
+        campaignContent: "",
+        gclid: "",
+      },
+      landingPage: "https://upscalix.com.au/mobile-app-development",
+      submittedAt: "2026-09-18T03:05:00.000Z",
     },
   },
 ];
@@ -146,32 +272,55 @@ process.env.PULSE_SYNC_SECRET = SECRET;
 const { syncLeadToPulse } = await import(
   pathToFileURL(resolvePath(import.meta.dirname, "../lib/landing/pulse.ts")).href
 );
+const { captureLeadInPulse } = await import(
+  pathToFileURL(resolvePath(import.meta.dirname, "../lib/landing/lead-capture.ts")).href
+);
 
-const fixtures = [];
-for (const { label, lead } of LEADS) {
-  const before = captured.length;
-  const result = await syncLeadToPulse(lead);
-  const req = captured[before];
-  if (result !== "delivered" || !req) {
-    console.error(`FAILED to capture "${label}" — result was ${result}`);
-    process.exit(1);
+/** Drives one producer over every enquiry and returns its captured requests. */
+async function capture(send, publicUrl, leads = LEADS) {
+  const fixtures = [];
+  for (const { label, lead } of leads) {
+    const before = captured.length;
+    const result = await send(lead);
+    const req = captured[before];
+    if (result !== "delivered" || !req) {
+      console.error(`FAILED to capture "${label}" — result was ${result}`);
+      process.exit(1);
+    }
+    fixtures.push({
+      label,
+      result,
+      // Rewritten to the documented production shape; the consumer asserts on
+      // it, and the loopback port would differ on every run.
+      url: publicUrl,
+      method: req.method,
+      signature: req.signature,
+      contentType: req.contentType,
+      body: req.body,
+    });
   }
-  fixtures.push({
-    label,
-    result,
-    // Rewritten to the documented production shape; the consumer asserts on it,
-    // and the loopback port would differ on every run.
-    url: "https://pulse.example.com/public/leads",
-    method: req.method,
-    signature: req.signature,
-    contentType: req.contentType,
-    body: req.body,
-  });
+  return fixtures;
+}
+
+function report(fixtures, path, key) {
+  writeFileSync(path, JSON.stringify(fixtures, null, 2) + "\n");
+  console.log(`Wrote ${fixtures.length} payloads to ${path}`);
+  for (const f of fixtures) {
+    console.log(`  ${String(JSON.parse(f.body)[key]).padEnd(34)} ${f.signature.slice(0, 12)}…`);
+  }
+}
+
+const deals = await capture(syncLeadToPulse, "https://pulse.example.com/public/leads");
+report(deals, out, "source");
+
+if (captureOut) {
+  process.env.PULSE_LEAD_CAPTURE_ENABLED = "true";
+  const leads = await capture(
+    captureLeadInPulse,
+    "https://pulse.example.com/public/lead-capture",
+    [...LEADS, ...CAPTURE_ONLY_LEADS],
+  );
+  report(leads, captureOut, "sourceForm");
 }
 
 server.close();
-writeFileSync(out, JSON.stringify(fixtures, null, 2) + "\n");
-console.log(`Wrote ${fixtures.length} payloads to ${out}`);
-for (const f of fixtures) {
-  console.log(`  ${JSON.parse(f.body).source.padEnd(30)} ${f.signature.slice(0, 12)}…`);
-}
