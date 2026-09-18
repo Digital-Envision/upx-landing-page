@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { trackLeadSubmitted } from "@/lib/analytics";
+import {
+  attributionForSubmission,
+  captureFirstTouch,
+} from "@/lib/landing/attribution.client";
 import type { LandingPageContent } from "@/lib/landing/content";
 import { MessageIcon, PaperIcon, ProfileIcon, WorkIcon } from "./figma-icons";
 import { MagePhoneCallFillIcon } from "./icons";
@@ -77,6 +81,21 @@ export function ContactForm({
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Record where this visit started, once, on arrival.
+   *
+   * It runs from the form rather than from the layout because the form is the
+   * only thing that needs the answer, and every landing page renders one. A
+   * page renders it TWICE (hero and footer); `captureFirstTouch` keeps the
+   * first record either way, so the second call changes nothing.
+   *
+   * In an effect, not during render: it touches `sessionStorage` and
+   * `location`, neither of which exists while the server renders this.
+   */
+  useEffect(() => {
+    captureFirstTouch();
+  }, []);
   const ExtraIcon = content.extraField ? EXTRA_FIELD_ICONS[content.extraField.icon] : null;
   const card = clsx("rounded-3xl bg-[#f4f6ff]", variant === "footer" && "shadow-xl");
 
@@ -87,12 +106,15 @@ export function ContactForm({
 
     const form = event.currentTarget;
     const payload = Object.fromEntries(new FormData(form).entries());
+    // Read at SUBMIT time, not at mount: a visitor can sit on the page while
+    // another tab in the same session records the arrival.
+    const { attribution, landingPage } = attributionForSubmission();
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, source: slug }),
+        body: JSON.stringify({ ...payload, source: slug, attribution, landingPage }),
       });
       const body = (await res.json().catch(() => null)) as
         | { error?: string; tracked?: boolean }

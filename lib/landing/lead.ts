@@ -1,3 +1,4 @@
+import type { Attribution } from "./attribution";
 import type { LandingSlug } from "./content";
 
 /**
@@ -25,6 +26,17 @@ export interface Lead {
   roles: string;
   details: string;
   submittedAt: string;
+  /**
+   * First-touch campaign parameters, captured in the browser on arrival.
+   *
+   * Always present, empty strings for a direct visit — Pulse records these
+   * write-once when the lead is created and offers no way to fill them in
+   * later, so "we did not capture any" is a real answer that has to travel
+   * with the enquiry rather than being left undefined.
+   */
+  attribution: Attribution;
+  /** The page the visitor ARRIVED on, which is not always the one they submit from. */
+  landingPage: string;
 }
 
 export function splitName(fullName: string): { firstName: string; lastName: string } {

@@ -368,6 +368,98 @@ spend at the new URL.
 
 ---
 
+## 4. Pulse Lead Pipeline
+
+`captureLeadInPulse()` posts the SAME enquiry to `POST /public/lead-capture`,
+signed the same way with the same secret. Pulse creates a **Lead** — a row on
+the Marketing → Sales qualification board (PRD §7), at stage `Lead`, with a
+Marketing Owner assigned by Pulse's own default rule and a §7.10 notification
+sent to that owner.
+
+**This is a second record, not a replacement.** One enquiry now produces a Deal
+(section 3) *and* a Lead. They are separate endpoints in Pulse deliberately: the
+deal route is a fixed production contract shared with another brand, and
+widening it to carry the seven attribution fields would change that contract for
+no benefit. `PULSE_LEAD_CAPTURE_ENABLED` gates this half alone, so the Deal
+pipeline the sales team works today is unaffected by switching it off.
+
+`PULSE_SYNC_URL` and `PULSE_SYNC_SECRET` are shared with section 3 — same Pulse,
+same shared secret, nothing extra to rotate.
+
+### What the two records get called
+
+| Wire field | Value | Why |
+|---|---|---|
+| `submissionId` | the same `leadId` the deal sync sends | Ties the Deal and the Lead to one enquiry, and is the idempotency key on both sides |
+| `sourceForm` | `Upscalix — Offshore Developers` | Rendered verbatim in the lead's Enquiry section, so it is written to be read |
+| `serviceInterest` | `Offshore Developers` | A different question from which form they filled in — on these pages the page is the answer |
+| `enquiryMessage` | roles + details, same as the deal's `notes` | |
+| `landingPage` | the page they ARRIVED on | Not necessarily the one they submitted from |
+
+### First-touch attribution
+
+`lib/landing/attribution.client.ts` reads the campaign parameters on arrival and
+keeps them in `sessionStorage` for the visit. Both spellings of each field are
+accepted, because an auto-tagged Google Ads URL and a hand-built UTM link name
+the same thing differently:
+
+| Pulse field | Query parameters (first match wins) |
+|---|---|
+| `campaignSource` | `utm_source` |
+| `campaignMedium` | `utm_medium` |
+| `campaignName` | `utm_campaign`, `campaignid` |
+| `adGroup` | `utm_adgroup`, `adgroup`, `adgroupid` |
+| `keyword` | `utm_term`, `keyword` |
+| `campaignContent` | `utm_content` |
+| `gclid` | `gclid`, `wbraid`, `gbraid` |
+
+Three decisions worth knowing:
+
+- **First touch, not last.** A visitor who arrives on an ad, reads two more
+  pages and submits on the third is still attributed to the ad. Re-reading the
+  URL at submit time would credit the internal link they clicked, which is the
+  common path.
+- **`sessionStorage`, not `localStorage`.** Attribution expires with the visit.
+  Someone who arrives from an ad today and returns directly next month is a
+  direct enquiry, and a persisted `gclid` would credit a click that had nothing
+  to do with it.
+- **Empty is captured too, and is never sent as `""`.** Pulse stores these
+  write-once and treats an empty string as a captured value, so a direct visit
+  would read as attributed to a campaign with a blank name. Absent fields are
+  omitted from the payload and show as "Not captured".
+
+**A lead captured with this switched off can never be attributed afterwards** —
+those columns appear on no update endpoint and no screen in Pulse.
+
+### The phone that gets dropped
+
+The form marks phone required in the browser and the API route deliberately does
+not enforce it, so `"call me"` and `"n/a"` really do arrive. Pulse's lead
+endpoint validates phone shape (at least six digits, nothing but the characters
+a number is written with) and would reject the **whole** submission over it —
+losing an enquiry for a field the email had already made unnecessary. So
+`usablePhone()` drops a value Pulse would refuse. The text is still in the deal
+and in the notification email, so nothing anyone can act on is lost.
+
+### Contract test
+
+`scripts/capture-pulse-contract.mjs` drives **both** producers over one list of
+enquiries and writes the captured bytes as fixtures for the two consumer-side
+contract tests in Pulse:
+
+```bash
+node --experimental-strip-types scripts/capture-pulse-contract.mjs \
+  ../pulse/backend/src/public-leads/__fixtures__/payloads.json \
+  ../pulse/backend/src/leads/__fixtures__/capture-payloads.json
+```
+
+The second path is optional. Re-run it and commit both files whenever a payload
+changes, in the same PR as the change — the tests on the Pulse side verify the
+signature and validate the body against the real DTO, which is the one failure
+neither repo's own tests can catch.
+
+---
+
 ## Testing
 
 With the server running:
@@ -381,13 +473,18 @@ lead, so read the server log rather than the response — every submission logs 
 per-destination summary:
 
 ```
-[contact] partial delivery for lead <uuid> — email:delivered sheet:delivered pulse:failed
+[contact] partial delivery for lead <uuid> — email:delivered sheet:delivered pulse:failed pulseLead:skipped
 ```
 
 That line is printed whenever any destination fails; a fully clean run logs
-nothing. `[notify]`, `[sheet]` and `[pulse]` warnings each name the env var they
-are missing. Swap `source` for the slug you want to exercise — this is the
-quickest way to confirm a newly added page is accepted by all three.
+nothing. `[notify]`, `[sheet]`, `[pulse]` and `[pulse-lead]` warnings each name the env
+var they are missing. Swap `source` for the slug you want to exercise — this is
+the quickest way to confirm a newly added page is accepted by all four.
+
+To exercise attribution, add the parameters to the page URL in a browser
+(`/it-outsourcing?utm_source=google&gclid=test123`) and submit the form; a curl
+straight at `/api/contact` bypasses the browser half, so pass `attribution`
+explicitly if you need to test it that way.
 
 The form also carries a hidden `website` honeypot field. Submissions that fill
 it get a `200` with no side effects, so bots don't learn to work around it.

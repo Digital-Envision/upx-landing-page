@@ -1,7 +1,12 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
+import {
+  sanitiseAttribution,
+  sanitiseLandingPage,
+} from "@/lib/landing/attribution";
 import { LANDING_PAGES } from "@/lib/landing/content";
 import type { Lead } from "@/lib/landing/lead";
+import { captureLeadInPulse } from "@/lib/landing/lead-capture";
 import { notifyLead } from "@/lib/landing/notify";
 import { appendLeadToSheet } from "@/lib/landing/spreadsheet";
 import { syncLeadToPulse } from "@/lib/landing/pulse";
@@ -55,17 +60,29 @@ export async function POST(request: Request) {
     roles: str(body.roles, 200),
     details: str(body.details, 4000),
     submittedAt: new Date().toISOString(),
+    // Captured in the browser on arrival and posted back with the form. Both
+    // are re-read here rather than trusted: they arrive as unknown values on a
+    // JSON body like everything else, and Pulse rejects the whole submission
+    // over one oversized field.
+    attribution: sanitiseAttribution(body.attribution),
+    landingPage: sanitiseLandingPage(body.landingPage),
   };
 
-  // Fan out to all three destinations concurrently. Each helper is env-gated
+  // Fan out to all four destinations concurrently. Each helper is env-gated
   // and swallows its own errors, so an outage in one never blocks the others.
-  const [email_, sheet, pulse] = await Promise.all([
+  //
+  // `pulse` and `pulseLead` are two records in the same system, not a retry of
+  // one: the first creates the Deal the sales team works, the second creates
+  // the Lead that enters the qualification board. They are gated separately so
+  // either can be switched off without the other.
+  const [email_, sheet, pulse, pulseLead] = await Promise.all([
     notifyLead(lead),
     appendLeadToSheet(lead),
     syncLeadToPulse(lead),
+    captureLeadInPulse(lead),
   ]);
 
-  const results = { email: email_, sheet, pulse };
+  const results = { email: email_, sheet, pulse, pulseLead };
   const outcomes = Object.values(results);
   const delivered = outcomes.filter((r) => r === "delivered").length;
   const failed = outcomes.filter((r) => r === "failed").length;
@@ -87,7 +104,7 @@ export async function POST(request: Request) {
   if (failed > 0) {
     console.warn(`[contact] partial delivery for lead ${lead.id} — ${summary}`);
   } else if (delivered === 0) {
-    // All three switched off: expected locally, a misconfiguration in prod.
+    // All four switched off: expected locally, a misconfiguration in prod.
     console.warn(`[contact] lead ${lead.id} accepted but every destination is disabled`);
   }
 
