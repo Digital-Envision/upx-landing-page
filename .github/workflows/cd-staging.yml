@@ -43,7 +43,7 @@ jobs:
             git pull origin staging
 
             echo "Writing environment variables..."
-            cat << 'EOF' > .env
+            cat << EOF > .env
             NODE_ENV=$NODE_ENV
             NOTIFY_EMAIL_ENABLED=$NOTIFY_EMAIL_ENABLED
             SMTP2GO_API_KEY=$SMTP2GO_API_KEY
@@ -54,7 +54,7 @@ jobs:
             PULSE_SYNC_URL=$PULSE_SYNC_URL
             PULSE_SYNC_SECRET=$PULSE_SYNC_SECRET
             EOF
-
+            
             # Build and reload service
             bun install --frozen-lockfile
             bun run build
