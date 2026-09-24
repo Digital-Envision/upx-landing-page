@@ -413,12 +413,26 @@ the same thing differently:
 | `campaignContent` | `utm_content` |
 | `gclid` | `gclid`, `wbraid`, `gbraid` |
 
-Three decisions worth knowing:
+Four decisions worth knowing:
 
 - **First touch, not last.** A visitor who arrives on an ad, reads two more
   pages and submits on the third is still attributed to the ad. Re-reading the
   URL at submit time would credit the internal link they clicked, which is the
   common path.
+- **First CAMPAIGN touch, not first page view** (CU-14ymjnvz39h). A stored
+  record that captured a campaign is the first touch and is never overwritten.
+  A stored EMPTY record is a direct arrival with nothing to preserve, so the
+  first campaign parameters seen later in the visit UPGRADE it — attribution
+  and `landingPage` both move to the page the campaign pointed at.
+
+  It used to discard them, which is what QA hit: browse the site directly, then
+  open a tagged URL in the same tab, and the enquiry reaches Pulse with all
+  seven fields null. The real-world case is worse than the test — read two
+  pages, then click a Google ad, and the `gclid` that click is billed under
+  never reaches the CRM. The trade is explicit: a direct arrival followed by a
+  tagged link is now attributed to the campaign. A direct visit credits no
+  channel and appears in no ad report, so there is nothing being taken away
+  from, and a real ad click is the more useful of the two facts to keep.
 - **`sessionStorage`, not `localStorage`.** Attribution expires with the visit.
   Someone who arrives from an ad today and returns directly next month is a
   direct enquiry, and a persisted `gclid` would credit a click that had nothing
@@ -485,6 +499,11 @@ To exercise attribution, add the parameters to the page URL in a browser
 (`/it-outsourcing?utm_source=google&gclid=test123`) and submit the form; a curl
 straight at `/api/contact` bypasses the browser half, so pass `attribution`
 explicitly if you need to test it that way.
+
+**The first touch is per TAB and survives navigation**, so a test run is not
+independent of the one before it. To retest from a clean arrival, open a new
+tab, or run `sessionStorage.removeItem("upx.attribution.firstTouch")` in the
+console — `clearFirstTouch()` is exported for the same purpose.
 
 The form also carries a hidden `website` honeypot field. Submissions that fill
 it get a `200` with no side effects, so bots don't learn to work around it.
