@@ -79,10 +79,11 @@ export async function POST(request: Request) {
   // the Lead that enters the qualification board. They are gated separately so
   // either can be switched off without the other.
   //
-  // `pulse` is OFF by default since CU-14ymjnvz3wn — a website enquiry should
-  // produce a Lead, not a Lead plus a Contact, Company and Deal. It still runs
-  // here rather than being deleted, because that is not a final decision:
-  // `PULSE_DEAL_SYNC_ENABLED=true` restores it. See lib/landing/pulse.ts.
+  // `pulse` writes a Contact and a Company, and — only when
+  // `PULSE_DEAL_SYNC_ENABLED=true` — a Deal as well. Since CU-14ymjnvz3wn the
+  // Deal is off: opening one is something a human does once the lead is
+  // qualified. All three still travel in ONE request, so the split lives on
+  // Pulse's side as `createDeal`. See lib/landing/pulse.ts.
   const [email_, sheet, pulse, pulseLead] = await Promise.all([
     notifyLead(lead),
     appendLeadToSheet(lead),
