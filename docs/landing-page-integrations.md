@@ -56,9 +56,16 @@ Every enquiry becomes one row, with these columns in this order:
 | 4 | `email` | `jamie@example.com.au` |
 | 5 | `phone` | `+61 400 000 000` |
 | 6 | `company` | `Riverbend Logistics` |
-| 7 | `rolesRequired` | `2 backend, 1 QA` |
-| 8 | `details` | the free-text project description |
-| 9 | `reference` | the lead's uuid, also quoted in the notification email |
+| 7 | `jobTitle` | `Head of Engineering` |
+| 8 | `rolesRequired` | `2 backend, 1 QA` |
+| 9 | `details` | the free-text project description |
+| 10 | `reference` | the lead's uuid, also quoted in the notification email |
+
+`jobTitle` was added in CU-14ymjnvz37v. **An existing workbook will not have the
+column**, and nothing breaks if you leave it that way: the Graph provider logs
+`[sheet] table "Leads" has no column for: jobTitle` on the first append after a
+restart and records the other nine. Add a `Job Title` column to start capturing
+it — `jobtitle`, `title` and `position` are all accepted spellings.
 
 `rolesRequired` is only populated on the offshore-developers page; every other
 page sends an empty string. `phone` is marked required in the form and enforced
@@ -66,12 +73,13 @@ by the browser, but the API deliberately does not validate it — a name and a
 working email are enough to follow up on, and rejecting the request would throw
 the enquiry away — so it can still arrive empty.
 
-**You do not have to use all nine, or keep this order.** The Graph provider
+**You do not have to use all ten, or keep this order.** The Graph provider
 reads the table's real header row and lays each enquiry out to match, so you can
 drop, reorder or rename columns in Excel and submissions keep working. Header
 matching ignores case, spaces and punctuation, and accepts common variants —
 `Full Name`, `fullname` and `Name` all map to the same field, as do
-`Business Email`/`email`, `Company Name`/`company`, `Project Details`/`details`,
+`Business Email`/`email`, `Company Name`/`company`,
+`Job Title`/`title`/`position`, `Project Details`/`details`,
 `Landing Page`/`page`, `Date`/`submittedAt`, `Lead ID`/`reference`.
 
 - A field with no matching column is simply not recorded, and the server logs
@@ -167,7 +175,7 @@ If you would rather skip the link lookup, set `LEAD_SHEET_DRIVE_ID` and
    `Upscalix Leads.xlsx`.
 2. Add a header row with exactly these columns:
    `submittedAt`, `page`, `fullName`, `email`, `phone`, `company`,
-   `rolesRequired`, `details`, `reference`.
+   `jobTitle`, `rolesRequired`, `details`, `reference`.
 3. Select the header row and the row beneath it → **Insert → Table**
    (tick "My table has headers"). Name it `Leads`. The Power Automate
    connector can only write to a *named table*, not a bare sheet.
@@ -185,6 +193,7 @@ If you would rather skip the link lookup, set `LEAD_SHEET_DRIVE_ID` and
     "email": { "type": "string" },
     "phone": { "type": "string" },
     "company": { "type": "string" },
+    "jobTitle": { "type": "string" },
     "rolesRequired": { "type": "string" },
     "details": { "type": "string" },
     "reference": { "type": "string" }
@@ -222,7 +231,8 @@ function doPost(e) {
   const row = JSON.parse(e.postData.contents);
   SpreadsheetApp.getActiveSheet().appendRow([
     row.submittedAt, row.page, row.fullName, row.email,
-    row.phone, row.company, row.rolesRequired, row.details, row.reference,
+    row.phone, row.company, row.jobTitle, row.rolesRequired, row.details,
+    row.reference,
   ]);
   return ContentService.createTextOutput('ok');
 }
@@ -372,9 +382,11 @@ spend at the new URL.
 
 `captureLeadInPulse()` posts the SAME enquiry to `POST /public/lead-capture`,
 signed the same way with the same secret. Pulse creates a **Lead** — a row on
-the Marketing → Sales qualification board (PRD §7), at stage `Lead`, with a
-Marketing Owner assigned by Pulse's own default rule and a §7.10 notification
-sent to that owner.
+the Marketing → Sales qualification board (PRD §7), at stage `Lead`, with **no
+Marketing Owner** (it reads "Unassigned" until somebody picks it up —
+CU-14ymjnvz325) and a §7.10 notification to every active Pulse user whose role
+grants the Leads page. The notification audience is the page grant, never the
+owner, so an unowned lead is announced to exactly the same people.
 
 **This is a second record, not a replacement.** One enquiry now produces a Deal
 (section 3) *and* a Lead. They are separate endpoints in Pulse deliberately: the
@@ -386,6 +398,44 @@ pipeline the sales team works today is unaffected by switching it off.
 `PULSE_SYNC_URL` and `PULSE_SYNC_SECRET` are shared with section 3 — same Pulse,
 same shared secret, nothing extra to rotate.
 
+### Website Form → Lead Field mapping
+
+The specification QA asked for in CU-14ymjnvz37v. **Every landing page renders
+the same `ContactForm` component**, so the core fields are identical across all
+five by construction — there is no per-page form to keep in step, and adding a
+sixth page inherits the set.
+
+| UI field | `name` | Required | Lead field | Notes |
+|---|---|---|---|---|
+| Full Name | `fullName` | yes | `fullName` | Also split into `firstName`/`lastName` for the Deal |
+| Business Email | `email` | yes | `email` | The identity key on both endpoints |
+| Phone Number | `phone` | in the browser only | `phone` | Dropped when Pulse could not identify anyone by it — see below |
+| Company Name | `company` | no | `company` | |
+| Job Title | `jobTitle` | no | `jobTitle` | Added in CU-14ymjnvz37v. Capped at 160 — Pulse's own `@MaxLength(160)` |
+| Project Details | `details` | no | `enquiryMessage` | The label varies per page (`form.detailsLabel`); the field does not |
+
+Two Lead fields are **derived, not collected**, and deliberately so:
+
+| Lead field | Source | Why not an input |
+|---|---|---|
+| `serviceInterest` | the landing page's own label | Each page sells exactly one service, so the page IS the answer. A dropdown could contradict the page the visitor is reading |
+| `landingPage` | first-touch capture in the browser | The page they ARRIVED on, which is not always the one they submit from |
+
+**Page-specific extras are allowed; unmapped ones are not.** There is one
+today — `roles` ("Roles Required", `offshore-developers` only, via
+`form.extraField`) — and it is prefixed into the enquiry text on **both**
+producers as `Roles required: …`, so it lands in the Lead's `enquiryMessage`
+and the Deal's `notes` rather than vanishing. Any new extra needs the same
+decision recorded here before it ships: an existing Lead field, a new one, or
+a labelled prefix in `enquiryMessage`.
+
+Adding a core field is a four-file change in this repo — the input in
+`components/landing/contact-form.tsx`, the type in `lib/landing/lead.ts`, the
+read in `app/api/contact/route.ts`, and the payload in
+`lib/landing/lead-capture.ts` — plus `notify.ts` and `spreadsheet.ts` if the
+team should see it in the email and the workbook, and a fixture refresh (see
+"Contract test") so Pulse's contract spec tests the real shape.
+
 ### What the two records get called
 
 | Wire field | Value | Why |
@@ -395,6 +445,7 @@ same shared secret, nothing extra to rotate.
 | `serviceInterest` | `Offshore Developers` | A different question from which form they filled in — on these pages the page is the answer |
 | `enquiryMessage` | roles + details, same as the deal's `notes` | |
 | `landingPage` | the page they ARRIVED on | Not necessarily the one they submitted from |
+| `jobTitle` | as typed, omitted when blank | `/public/leads` has no such field, so the Deal does not carry it |
 
 ### First-touch attribution
 
@@ -479,7 +530,7 @@ neither repo's own tests can catch.
 With the server running:
 
 ```bash
-curl -s -X POST http://localhost:3000/api/contact -H 'Content-Type: application/json' -d '{"fullName":"Test Person","email":"test@example.com","phone":"+61400000000","company":"Acme","details":"hello","source":"it-outsourcing"}'
+curl -s -X POST http://localhost:3000/api/contact -H 'Content-Type: application/json' -d '{"fullName":"Test Person","email":"test@example.com","phone":"+61400000000","company":"Acme","jobTitle":"Head of Engineering","details":"hello","source":"it-outsourcing"}'
 ```
 
 Expected: `{"ok":true}`. A `200` only means *at least one* destination took the

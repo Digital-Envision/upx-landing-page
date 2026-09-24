@@ -64,6 +64,7 @@ const LEADS = [
       email: "jamie@example.com.au",
       phone: "+61400000000",
       company: "Riverbend Logistics",
+      jobTitle: "Head of Engineering",
       roles: "",
       details: "Need a team of 3 for a 6-month build.",
       // Google Ads, fully tagged: the shape every paid enquiry should carry.
@@ -89,6 +90,7 @@ const LEADS = [
       email: "prakash@example.com",
       phone: "+61411111111",
       company: "",
+      jobTitle: "",
       roles: "2 backend, 1 QA",
       details: "Scaling the platform team.",
       // A hand-built UTM link with no click id — LinkedIn, a newsletter.
@@ -114,6 +116,7 @@ const LEADS = [
       email: "alex@example.com.au",
       phone: "",
       company: "",
+      jobTitle: "",
       roles: "",
       details: "",
       // A direct visit: every field blank, which §7.2 requires to be accepted
@@ -142,6 +145,7 @@ const LEADS = [
       email: "morgan@example.com.au",
       phone: "+61422222222",
       company: "Kestrel Health",
+      jobTitle: "CTO",
       roles: "",
       details: "Looking to stand up a dedicated squad.",
       attribution: {
@@ -172,6 +176,7 @@ const LEADS = [
       email: "sam@example.com.au",
       phone: "+61433333333",
       company: "",
+      jobTitle: "",
       roles: "",
       details: "Cross-platform build, iOS first.",
       attribution: {
@@ -209,6 +214,7 @@ const CAPTURE_ONLY_LEADS = [
       // Pulse's phone rule would 400 the whole submission over it.
       phone: "call me",
       company: "",
+      jobTitle: "",
       roles: "",
       details: "Prefer a call back.",
       attribution: {
@@ -233,6 +239,7 @@ const CAPTURE_ONLY_LEADS = [
       email: "kit@example.com.au",
       phone: "12345",
       company: "Northpoint",
+      jobTitle: "Operations Manager",
       roles: "",
       details: "",
       attribution: {

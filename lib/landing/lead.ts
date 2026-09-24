@@ -22,7 +22,19 @@ export interface Lead {
   /** Required in the form, but never enforced server-side — see the API route. */
   phone: string;
   company: string;
-  /** Only present on offshore-developers, which has a "Roles Required" field. */
+  /**
+   * Job title. Collected on EVERY form since CU-14ymjnvz37v, because Pulse's
+   * Lead record and its manual-entry form both carry the field and a website
+   * lead arriving with it null was the only difference between the two.
+   * Optional, like `company`.
+   */
+  jobTitle: string;
+  /**
+   * The one page-specific field, on offshore-developers only ("Roles
+   * Required"). Extras are allowed — what is not allowed is an extra with no
+   * defined home in the Lead record, so this one is prefixed into the enquiry
+   * message on both producers. See docs/landing-page-integrations.md.
+   */
   roles: string;
   details: string;
   submittedAt: string;

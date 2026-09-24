@@ -101,6 +101,7 @@ export function buildCapturePayload(lead: Lead): Record<string, string | undefin
     email: lead.email,
     phone: usablePhone(lead.phone),
     company: lead.company || undefined,
+    jobTitle: lead.jobTitle || undefined,
     // Which FORM this was. Every landing page has exactly one, so the page
     // names it; Pulse renders this string verbatim in the lead's Enquiry
     // section, so it is written for a person to read.

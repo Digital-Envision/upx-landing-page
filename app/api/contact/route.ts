@@ -57,6 +57,9 @@ export async function POST(request: Request) {
     email,
     phone: str(body.phone, 40),
     company: str(body.company, 160),
+    // 160 is Pulse's own cap on `jobTitle`; it rejects the whole submission
+    // over one oversized field, so truncating here keeps the enquiry.
+    jobTitle: str(body.jobTitle, 160),
     roles: str(body.roles, 200),
     details: str(body.details, 4000),
     submittedAt: new Date().toISOString(),
