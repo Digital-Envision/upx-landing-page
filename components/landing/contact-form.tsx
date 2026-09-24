@@ -9,7 +9,7 @@ import {
 } from "@/lib/landing/attribution.client";
 import type { LandingPageContent } from "@/lib/landing/content";
 import { MessageIcon, PaperIcon, ProfileIcon, WorkIcon } from "./figma-icons";
-import { MagePhoneCallFillIcon } from "./icons";
+import { HugeiconsLicenseIcon, MagePhoneCallFillIcon } from "./icons";
 import { CtaButton } from "./ui";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -35,6 +35,10 @@ const FIELD_ICONS = {
   message: { Icon: MessageIcon, w: 21.43, h: 19.29 },
   phone: { Icon: MagePhoneCallFillIcon, w: 21.43, h: 21.43, className: "opacity-25" },
   work: { Icon: WorkIcon, w: 21.43, h: 21.43 },
+  // Job Title. The design has no glyph for it — the field postdates the
+  // frames — and the briefcase is already Company, so this is the closest
+  // thing in the inlined set. Swap it if design supplies one.
+  jobTitle: { Icon: HugeiconsLicenseIcon, w: 21.43, h: 21.43, className: "opacity-25" },
   paper: { Icon: PaperIcon, w: 18.42, h: 21.67 },
 } as const satisfies Record<string, IconSpec>;
 
@@ -221,6 +225,24 @@ export function ContactForm({
             maxLength={160}
             placeholder="Company Name"
             aria-label="Company name"
+          />
+        </Field>
+
+        {/*
+          Optional, like Company. 160 is Pulse's own `@MaxLength(160)` on
+          `jobTitle` — it rejects the WHOLE submission over one oversized
+          field, so the browser cap has to be the one Pulse enforces rather
+          than a round number near it.
+        */}
+        <Field icon={FIELD_ICONS.jobTitle}>
+          <input
+            className={inputClass}
+            name="jobTitle"
+            type="text"
+            autoComplete="organization-title"
+            maxLength={160}
+            placeholder="Job Title"
+            aria-label="Job title"
           />
         </Field>
 

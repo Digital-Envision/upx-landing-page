@@ -34,13 +34,23 @@ function toFields(lead: Lead): Record<string, string> {
     email: lead.email,
     phone: lead.phone,
     company: lead.company,
+    jobTitle: lead.jobTitle,
     rolesRequired: lead.roles,
     details: lead.details,
     reference: lead.id,
   };
 }
 
-/** Canonical field order, used when a destination has no headers to read. */
+/**
+ * Canonical field order, used when a destination has no headers to read.
+ *
+ * Adding a field here is safe on both paths, which is worth knowing before
+ * adding another. The Graph path maps by HEADER, so a workbook with no "Job
+ * Title" column logs the existing `unmatched` warning and records the rest;
+ * add the column to start capturing it. The webhook path sends a KEYED object,
+ * not a positional array, so a receiver that reads by name is unaffected and
+ * one that reads by position was already fragile.
+ */
 const FIELD_ORDER = [
   "submittedAt",
   "page",
@@ -48,6 +58,7 @@ const FIELD_ORDER = [
   "email",
   "phone",
   "company",
+  "jobTitle",
   "rolesRequired",
   "details",
   "reference",
@@ -81,6 +92,9 @@ const HEADER_ALIASES: Record<string, string> = {
   contactnumber: "phone",
   company: "company",
   companyname: "company",
+  jobtitle: "jobTitle",
+  title: "jobTitle",
+  position: "jobTitle",
   rolesrequired: "rolesRequired",
   roles: "rolesRequired",
   details: "details",
