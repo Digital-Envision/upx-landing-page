@@ -11,7 +11,7 @@ to the same endpoint and are indistinguishable downstream.
 |---|-------------|--------|----------|
 | 1 | Email to the team | `lib/landing/notify.ts` | `NOTIFY_EMAIL_ENABLED` |
 | 2 | Row in the cloud spreadsheet | `lib/landing/spreadsheet.ts` | `LEAD_SHEET_ENABLED` |
-| 3 | Deal in Pulse (Virtual-Office CRM) | `lib/landing/pulse.ts` | `PULSE_DEAL_SYNC_ENABLED` — **off by default**, see §3 |
+| 3 | Contact + Company (+ optional Deal) in Pulse | `lib/landing/pulse.ts` | `PULSE_CRM_SYNC_ENABLED`, and `PULSE_DEAL_SYNC_ENABLED` for the Deal — see §3 |
 
 Each one is env-gated and swallows its own errors, so an outage in any single
 destination never blocks the others. The visitor only sees an error if **every**
@@ -271,26 +271,28 @@ field consistently arrives blank, check the server log for the
 
 ## 3. Pulse CRM (Virtual-Office)
 
-> **Off by default since CU-14ymjnvz3wn.** A website enquiry should produce a
-> **Lead** (§4) and nothing else. QA reported one submission creating four
-> records — a Lead, plus a Contact, a Company and a Deal — and the Lead
-> Pipeline PRD defines no such conversion: at NCA it records the deal value and
-> service purchased as *fields on the Lead*, and its §4 puts any change to
-> Contacts out of scope. Creating them up front pre-empts a qualification
-> decision nobody has made yet.
+> **The Deal is off; the Contact and the Company are not** (CU-14ymjnvz3wn).
+> This endpoint writes three records in one request, and they are wanted
+> separately:
 >
-> **Not a final decision — the code is intact.** Set
-> `PULSE_DEAL_SYNC_ENABLED=true` and everything below applies again, unchanged.
-> The rest of this section describes what happens when it is on.
+> | Flag | Controls |
+> |---|---|
+> | `PULSE_CRM_SYNC_ENABLED` | whether this call happens at all — the **Contact** and the **Company**. Falls back to the older `PULSE_SYNC_ENABLED`, so an existing environment keeps working untouched |
+> | `PULSE_DEAL_SYNC_ENABLED` | whether that same call also opens a **Deal**, by sending `createDeal` on the payload. Off unless explicitly `true` |
 >
-> `PULSE_SYNC_ENABLED` is retired and no longer read. The rename is deliberate:
-> reusing the old name would have meant this change did nothing until somebody
-> edited a deployed GitHub secret, so the code and the running site would have
-> disagreed. An environment still carrying it logs a warning naming the new
-> flag rather than failing quietly.
+> Opening a Deal is something a human does once the lead is qualified, so doing
+> it on an enquiry pre-empts that decision — and the Lead Pipeline PRD records
+> a won lead's value and service as *fields on the Lead* rather than as a
+> separate record. The Contact and the Company are wanted either way: a person
+> and an organisation really did get in touch.
 >
-> **Only the Upscalix pages are affected.** `/public/leads` is unchanged and
-> still serves VA For Everyone and Scalout from their own repositories.
+> **Splitting them took a change at both ends.** The three writes share one
+> request and one transaction, so nothing this repo could do alone would keep
+> two and drop the third — hence `createDeal` on Pulse's DTO, where **absent
+> means true** so VA For Everyone and Scalout, which post from their own
+> repositories, carry on unchanged.
+>
+> The rest of this section describes what happens with both flags on.
 
 `syncLeadToPulse()` posts to `POST /public/leads` on the Pulse backend. The JSON
 body is signed with `HMAC-SHA256(PULSE_SYNC_SECRET)` and sent as the
@@ -350,17 +352,20 @@ Three fields decide where the deal lands:
 
 `notes` lands in the deal's description.
 
-To switch it back on, set these to the same values as the Pulse backend:
+To switch the Deal back on, set these to the same values as the Pulse backend:
 
 ```bash
-PULSE_DEAL_SYNC_ENABLED=true
+PULSE_CRM_SYNC_ENABLED=true     # Contact + Company
+PULSE_DEAL_SYNC_ENABLED=true    # …and the Deal
 PULSE_SYNC_URL=https://pulse.your-domain
 PULSE_SYNC_SECRET=<shared secret>
 ```
 
-On staging and production that is the `PULSE_DEAL_SYNC_ENABLED` repository
-secret, which `cd-staging.yml` writes into the server's `.env`. Unset, it
-deploys empty and the sync is off — which is the current state.
+On staging and production these are repository secrets that `cd-staging.yml`
+writes into the server's `.env`. `PULSE_CRM_SYNC_ENABLED` falls back to the
+older `PULSE_SYNC_ENABLED`, which deployed environments already carry — so the
+Contact and the Company keep being created with no secret edit, while
+`PULSE_DEAL_SYNC_ENABLED` stays unset and no Deal is opened.
 
 `PULSE_SYNC_URL` is the backend origin — `/public/leads` is appended.
 
@@ -413,10 +418,10 @@ CU-14ymjnvz325) and a §7.10 notification to every active Pulse user whose role
 grants the Leads page. The notification audience is the page grant, never the
 owner, so an unowned lead is announced to exactly the same people.
 
-**This is the record a website enquiry is meant to produce.** It used to be the
-second of two — a Deal (section 3) *and* a Lead — until CU-14ymjnvz3wn turned
-the deal sync off by default. With `PULSE_DEAL_SYNC_ENABLED=true` one enquiry
-produces both again. They are separate endpoints in Pulse deliberately: the
+**This is the record a website enquiry is meant to produce.** Section 3 still
+runs alongside it and creates a Contact and a Company; what CU-14ymjnvz3wn
+stopped is the **Deal**. With `PULSE_DEAL_SYNC_ENABLED=true` one enquiry
+produces all four again. They are separate endpoints in Pulse deliberately: the
 deal route is a fixed production contract shared with another brand, and
 widening it to carry the seven attribution fields would change that contract for
 no benefit. `PULSE_LEAD_CAPTURE_ENABLED` gates this half alone, so the Deal

@@ -15,50 +15,49 @@ import { pageLabel, splitName } from "./lead";
  * Pulse picks the pipeline from the brand's default, overridden per page where
  * that default is wrong — custom software is a Project, everything else Staff.
  *
- * **OFF by default since CU-14ymjnvz3wn.** QA reported that one website
- * enquiry produces four records — a Lead, and a Contact, Company and Deal —
- * and the Lead Pipeline PRD defines no such conversion: at NCA it records the
- * deal value and service purchased as FIELDS ON THE LEAD, and §4 puts any
- * change to Contacts out of scope entirely. Creating them up front pre-empts a
- * qualification decision nobody has made yet.
+ * **Two independent switches since CU-14ymjnvz3wn.** The endpoint writes three
+ * records in one request, and QA wanted them separated:
  *
- * **This is not a final decision, so the code stays.** Set
- * `PULSE_DEAL_SYNC_ENABLED=true` to turn deal creation back on; nothing else
- * changed, and an enquiry sent with it on behaves exactly as before.
+ * - `PULSE_CRM_SYNC_ENABLED` decides whether this call happens at all, which
+ *   is what creates the **Contact** and the **Company**. Falls back to the
+ *   retired `PULSE_SYNC_ENABLED`, which is what deployed environments already
+ *   carry — so this keeps working with no secret edit, and the clearer name is
+ *   what new environments set.
+ * - `PULSE_DEAL_SYNC_ENABLED` decides whether that same call also opens a
+ *   **Deal**, by sending `createDeal` on the payload. Unset means no deal.
  *
- * The flag is a NEW name rather than flipping `PULSE_SYNC_ENABLED`, for two
- * reasons. The old name is set to `true` in the deployed environment, so
- * reusing it would mean this change did nothing until somebody edited a GitHub
- * secret — the code would say one thing and the running site another. And
- * `PULSE_SYNC_ENABLED` / `PULSE_LEAD_CAPTURE_ENABLED` was never a legible pair
- * once there were two Pulse destinations; `PULSE_DEAL_SYNC_ENABLED` says which
- * record it makes.
+ * Why the Deal is the one switched off: an Upscalix enquiry enters the Lead
+ * Pipeline as a Lead (`POST /public/lead-capture`), where opening a Deal is
+ * something a human does once the lead is qualified — doing it here pre-empts
+ * that decision, and the Lead Pipeline PRD records a won lead's value and
+ * service as fields ON the lead rather than as a separate record. The Contact
+ * and the Company are wanted either way: a person and an organisation really
+ * did get in touch.
  *
- * Only the Upscalix pages are affected. `/public/leads` is unchanged and still
- * serves VA For Everyone and Scalout from their own repositories.
+ * Splitting them needed a change at BOTH ends. The three writes share one
+ * request and one transaction, so nothing this repo could do alone would keep
+ * two of them and drop the third — hence `createDeal` on the Pulse DTO, where
+ * **absent means true** so VA For Everyone and Scalout, which post from their
+ * own repositories, carry on unchanged.
  *
  * Env-gated and never throws.
  */
 export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
-  if (process.env.PULSE_DEAL_SYNC_ENABLED !== "true") {
-    // Named explicitly rather than ignored. An environment still carrying the
-    // retired flag is one somebody set deliberately, and silently doing
-    // nothing about it is how an afternoon gets lost to "why are there no
-    // deals" — the answer being a variable that no longer exists.
-    if (process.env.PULSE_SYNC_ENABLED === "true") {
-      console.warn(
-        "[pulse] PULSE_SYNC_ENABLED is set but no longer read — deal creation " +
-          "is off (CU-14ymjnvz3wn). Set PULSE_DEAL_SYNC_ENABLED=true to restore it."
-      );
-    }
-    return "skipped";
-  }
+  // `??`, not `||`: an explicit empty string is a deliberate "not configured"
+  // and must not fall through to the legacy name behind it.
+  const crmSync =
+    process.env.PULSE_CRM_SYNC_ENABLED ?? process.env.PULSE_SYNC_ENABLED;
+  if (crmSync !== "true") return "skipped";
+
+  // Strict equality, like every other flag here: `TRUE` and `1` are off, so a
+  // typo fails closed and cannot silently start opening deals again.
+  const createDeal = process.env.PULSE_DEAL_SYNC_ENABLED === "true";
 
   const url = process.env.PULSE_SYNC_URL;
   const secret = process.env.PULSE_SYNC_SECRET;
   if (!url || !secret) {
     console.warn(
-      "[pulse] PULSE_DEAL_SYNC_ENABLED=true but PULSE_SYNC_URL / PULSE_SYNC_SECRET are not set — skipping"
+      "[pulse] CRM sync is enabled but PULSE_SYNC_URL / PULSE_SYNC_SECRET are not set — skipping"
     );
     return "skipped";
   }
@@ -81,6 +80,10 @@ export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
     notes: [lead.roles ? `Roles required: ${lead.roles}` : "", lead.details]
       .filter(Boolean)
       .join("\n\n"),
+    // Sent explicitly in both directions rather than omitted when true. The
+    // field is the only thing on the wire that says whether this producer
+    // knows about the split at all, and the contract test pins it.
+    createDeal,
   };
 
   const body = JSON.stringify(payload);

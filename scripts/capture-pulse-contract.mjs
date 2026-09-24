@@ -279,10 +279,12 @@ await new Promise((done) => server.listen(0, "127.0.0.1", done));
 const { port } = server.address();
 
 // Both producers are forced ON here regardless of how the environment is
-// configured. The deal sync ships off by default (CU-14ymjnvz3wn), but the
-// deal contract still has to be pinned: the endpoint is live for VA For
-// Everyone and Scalout, and this flag is meant to be flippable back without
-// discovering the wire format has drifted in the meantime.
+// configured. The deal half ships off (CU-14ymjnvz3wn), but its contract still
+// has to be pinned: the endpoint is live for VA For Everyone and Scalout, and
+// the flag is meant to be flippable back without discovering the wire format
+// has drifted in the meantime. So the fixtures capture `createDeal: true` —
+// they describe the wire FORMAT, not any one deployment's configuration.
+process.env.PULSE_CRM_SYNC_ENABLED = "true";
 process.env.PULSE_DEAL_SYNC_ENABLED = "true";
 process.env.PULSE_SYNC_URL = `http://127.0.0.1:${port}`;
 process.env.PULSE_SYNC_SECRET = SECRET;
