@@ -70,10 +70,28 @@ function write(value: StoredFirstTouch): void {
  *
  * A direct visit stores an EMPTY record on purpose. Storing nothing would mean
  * the next page load looks like a fresh arrival, so an internal link carrying
- * no parameters would keep re-capturing "nothing" — harmless today, but it
- * also means a visitor who arrives direct and later clicks a link with a
- * campaign tag on it would be attributed to that link instead of to the direct
- * visit they actually started with.
+ * no parameters would keep re-capturing "nothing".
+ *
+ * **First CAMPAIGN touch, not first page view** (CU-14ymjnvz39h). A stored
+ * record that captured a campaign is the first touch and is never overwritten
+ * — that is the whole rule, and it is what stops an internal link from
+ * clearing the ad that brought the visitor in. But a stored EMPTY record is a
+ * direct arrival with nothing to preserve, so the first campaign parameters
+ * seen in the visit UPGRADE it rather than being discarded.
+ *
+ * It used to discard them, and that is what QA hit: browse the site directly,
+ * then open a tagged URL in the same tab, and the enquiry arrives in Pulse
+ * with all seven attribution fields null. The real-world version is worse than
+ * the test case — someone reads two pages, then clicks a Google ad, and the
+ * `gclid` that ad click is billed under never reaches the CRM. Pulse records
+ * attribution ONCE at lead creation and offers no way to edit it afterwards,
+ * so a click lost here is lost permanently.
+ *
+ * The trade is explicit: a visitor who arrives direct and later clicks a
+ * tagged link is now attributed to the campaign rather than to the direct
+ * visit. A direct visit is the absence of attribution — it credits no channel
+ * and appears in no ad report — so there is nothing being taken away from, and
+ * a real ad click is the more useful of the two facts to keep.
  */
 export function captureFirstTouch(): StoredFirstTouch {
   if (typeof window === "undefined") {
@@ -81,13 +99,24 @@ export function captureFirstTouch(): StoredFirstTouch {
   }
 
   const existing = read();
-  if (existing) return existing;
+  const live = parseAttribution(window.location.search);
+
+  // Already holding a campaign: that is the first touch, full stop.
+  if (existing && !isEmptyAttribution(existing.attribution)) return existing;
+  // Holding a direct arrival, and this page adds nothing: keep the original,
+  // so `capturedAt` and `landingPage` still name where the visit started.
+  if (existing && isEmptyAttribution(live)) return existing;
 
   const captured: StoredFirstTouch = {
-    attribution: parseAttribution(window.location.search),
+    attribution: live,
     // Origin + path only. The query string holds the campaign parameters,
     // which are being stored beside it in their own fields — repeating them
     // here would put the same gclid in two columns of the CRM.
+    //
+    // On an upgrade this moves with the attribution, on purpose: the page the
+    // campaign pointed at is the landing page that campaign is reported
+    // against, and leaving the earlier direct path here would describe a visit
+    // the attribution beside it did not come from.
     landingPage: sanitiseLandingPage(window.location.origin + window.location.pathname),
     capturedAt: new Date().toISOString(),
   };
@@ -118,10 +147,19 @@ export function attributionForSubmission(): {
 
   if (!stored) return { attribution: live, landingPage: livePage };
 
-  // A stored EMPTY record beats live parameters — see `captureFirstTouch`:
-  // arriving direct and then clicking a tagged link is still a direct visit.
-  // The one exception is a stored record that has no landing page (older
-  // format, or a failed write), where the live page is better than nothing.
+  // The same rule `captureFirstTouch` applies, restated here rather than
+  // assumed: that one runs in a mount effect, so a submit could otherwise
+  // race it or find a record written before this rule existed (a visit already
+  // in progress when the deploy landed keeps its sessionStorage). A stored
+  // EMPTY record is a direct arrival, which live campaign parameters upgrade.
+  if (isEmptyAttribution(stored.attribution) && !isEmptyAttribution(live)) {
+    return { attribution: live, landingPage: livePage };
+  }
+
+  // A stored CAMPAIGN beats live parameters: the visitor may be submitting
+  // from a later page than the one they arrived on. The one exception is a
+  // stored record that has no landing page (older format, or a failed write),
+  // where the live page is better than nothing.
   return {
     attribution: stored.attribution,
     landingPage: stored.landingPage || livePage,
