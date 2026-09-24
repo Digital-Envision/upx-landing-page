@@ -278,7 +278,12 @@ const server = createServer((req, res) => {
 await new Promise((done) => server.listen(0, "127.0.0.1", done));
 const { port } = server.address();
 
-process.env.PULSE_SYNC_ENABLED = "true";
+// Both producers are forced ON here regardless of how the environment is
+// configured. The deal sync ships off by default (CU-14ymjnvz3wn), but the
+// deal contract still has to be pinned: the endpoint is live for VA For
+// Everyone and Scalout, and this flag is meant to be flippable back without
+// discovering the wire format has drifted in the meantime.
+process.env.PULSE_DEAL_SYNC_ENABLED = "true";
 process.env.PULSE_SYNC_URL = `http://127.0.0.1:${port}`;
 process.env.PULSE_SYNC_SECRET = SECRET;
 

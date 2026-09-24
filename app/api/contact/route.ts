@@ -78,6 +78,11 @@ export async function POST(request: Request) {
   // one: the first creates the Deal the sales team works, the second creates
   // the Lead that enters the qualification board. They are gated separately so
   // either can be switched off without the other.
+  //
+  // `pulse` is OFF by default since CU-14ymjnvz3wn — a website enquiry should
+  // produce a Lead, not a Lead plus a Contact, Company and Deal. It still runs
+  // here rather than being deleted, because that is not a final decision:
+  // `PULSE_DEAL_SYNC_ENABLED=true` restores it. See lib/landing/pulse.ts.
   const [email_, sheet, pulse, pulseLead] = await Promise.all([
     notifyLead(lead),
     appendLeadToSheet(lead),
