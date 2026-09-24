@@ -15,16 +15,50 @@ import { pageLabel, splitName } from "./lead";
  * Pulse picks the pipeline from the brand's default, overridden per page where
  * that default is wrong — custom software is a Project, everything else Staff.
  *
+ * **OFF by default since CU-14ymjnvz3wn.** QA reported that one website
+ * enquiry produces four records — a Lead, and a Contact, Company and Deal —
+ * and the Lead Pipeline PRD defines no such conversion: at NCA it records the
+ * deal value and service purchased as FIELDS ON THE LEAD, and §4 puts any
+ * change to Contacts out of scope entirely. Creating them up front pre-empts a
+ * qualification decision nobody has made yet.
+ *
+ * **This is not a final decision, so the code stays.** Set
+ * `PULSE_DEAL_SYNC_ENABLED=true` to turn deal creation back on; nothing else
+ * changed, and an enquiry sent with it on behaves exactly as before.
+ *
+ * The flag is a NEW name rather than flipping `PULSE_SYNC_ENABLED`, for two
+ * reasons. The old name is set to `true` in the deployed environment, so
+ * reusing it would mean this change did nothing until somebody edited a GitHub
+ * secret — the code would say one thing and the running site another. And
+ * `PULSE_SYNC_ENABLED` / `PULSE_LEAD_CAPTURE_ENABLED` was never a legible pair
+ * once there were two Pulse destinations; `PULSE_DEAL_SYNC_ENABLED` says which
+ * record it makes.
+ *
+ * Only the Upscalix pages are affected. `/public/leads` is unchanged and still
+ * serves VA For Everyone and Scalout from their own repositories.
+ *
  * Env-gated and never throws.
  */
 export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
-  if (process.env.PULSE_SYNC_ENABLED !== "true") return "skipped";
+  if (process.env.PULSE_DEAL_SYNC_ENABLED !== "true") {
+    // Named explicitly rather than ignored. An environment still carrying the
+    // retired flag is one somebody set deliberately, and silently doing
+    // nothing about it is how an afternoon gets lost to "why are there no
+    // deals" — the answer being a variable that no longer exists.
+    if (process.env.PULSE_SYNC_ENABLED === "true") {
+      console.warn(
+        "[pulse] PULSE_SYNC_ENABLED is set but no longer read — deal creation " +
+          "is off (CU-14ymjnvz3wn). Set PULSE_DEAL_SYNC_ENABLED=true to restore it."
+      );
+    }
+    return "skipped";
+  }
 
   const url = process.env.PULSE_SYNC_URL;
   const secret = process.env.PULSE_SYNC_SECRET;
   if (!url || !secret) {
     console.warn(
-      "[pulse] PULSE_SYNC_ENABLED=true but PULSE_SYNC_URL / PULSE_SYNC_SECRET are not set — skipping"
+      "[pulse] PULSE_DEAL_SYNC_ENABLED=true but PULSE_SYNC_URL / PULSE_SYNC_SECRET are not set — skipping"
     );
     return "skipped";
   }
