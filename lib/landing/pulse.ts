@@ -43,10 +43,21 @@ import { pageLabel, splitName } from "./lead";
  * Env-gated and never throws.
  */
 export async function syncLeadToPulse(lead: Lead): Promise<DeliveryResult> {
-  // `??`, not `||`: an explicit empty string is a deliberate "not configured"
-  // and must not fall through to the legacy name behind it.
+  // Empty means NOT CONFIGURED, so it falls through to the legacy name.
+  //
+  // `??` was wrong here and shipped broken. cd-staging.yml writes every key
+  // unconditionally — `PULSE_CRM_SYNC_ENABLED=$PULSE_CRM_SYNC_ENABLED` — so a
+  // secret that does not exist arrives as the EMPTY STRING, not as absent.
+  // `""` is neither null nor undefined, so `??` kept it, the fallback never
+  // fired, and the call was skipped on a deployment whose legacy flag was
+  // `true` the whole time: no Contact and no Company.
+  //
+  // The distinction `??` protects — "explicitly blank" versus "not set" — does
+  // not exist in a .env this workflow generates, because there is no way to
+  // omit a key from it.
   const crmSync =
-    process.env.PULSE_CRM_SYNC_ENABLED ?? process.env.PULSE_SYNC_ENABLED;
+    process.env.PULSE_CRM_SYNC_ENABLED?.trim() ||
+    process.env.PULSE_SYNC_ENABLED?.trim();
   if (crmSync !== "true") return "skipped";
 
   // Strict equality, like every other flag here: `TRUE` and `1` are off, so a
